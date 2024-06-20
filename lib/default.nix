@@ -1,11 +1,11 @@
-{pkgs ? import <nixpkgs> {}}: {
+{pkgs ? import <nixpkgs> {}}: rec {
   writeScriptBinWithArgs = binName: script: (pkgs.writeScriptBin binName ''${script} "''${@}"'');
   withRuntimeDeps = {
     targetDerivation,
     binName,
     runtimeDepDerivations,
   }:
-    (pkgs.writeScriptBin binName ''${targetDerivation.outPath}/bin/${binName} "''${@}"'')
+    (writeScriptBinWithArgs binName "${targetDerivation.outPath}/bin/${binName}")
     .overrideAttrs (attrs: {
       nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [pkgs.makeWrapper];
       buildCommand =

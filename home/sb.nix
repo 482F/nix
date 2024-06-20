@@ -2,17 +2,18 @@
   config,
   pkgs,
   env,
+  myLib,
   ...
 }: {
   home.packages =
     [
-      (pkgs.writeScriptBin "sb" ''bash ~/git/misc/sb.sh "''${@}"'')
+      (myLib.writeScriptBinWithArgs "sb" "bash ~/git/misc/sb.sh")
     ]
     ++ (map ({
         name,
         path,
       }:
-        pkgs.writeScriptBin name ''sb ${path} "''${@}"'')
+        myLib.writeScriptBinWithArgs name "sb ${path}")
       [
         {
           name = "git-zrb";

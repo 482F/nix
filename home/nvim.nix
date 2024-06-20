@@ -41,7 +41,7 @@
         ];
     })
 
-    (pkgs.writeScriptBin "rnvim" ''sb ~/git/misc/rnvim.ts "''${@}"'')
+    (myLib.writeScriptBinWithArgs "rnvim" "sb ~/git/misc/rnvim.ts")
   ];
 
   programs.bash = {
