@@ -1,4 +1,5 @@
 {pkgs ? import <nixpkgs> {}}: {
+  writeScriptBinWithArgs = binName: script: (pkgs.writeScriptBin binName ''${script} "''${@}"'');
   withRuntimeDeps = {
     targetDerivation,
     binName,
@@ -15,5 +16,5 @@
       meta.priority = (targetDerivation.meta.priority or 5) - 1;
     });
   lazyNixRun = name: pkgs.writeScriptBin name ''nix run nixpkgs#${name} -- "''${@}"'';
-  importAll = with builtins; path: map (pathStr: import (path + ("/" + pathStr))) (attrNames (readDir path)) ;
+  importAll = with builtins; path: map (pathStr: import (path + ("/" + pathStr))) (attrNames (readDir path));
 }
