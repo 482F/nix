@@ -147,6 +147,10 @@
 
   xdg.enable = true;
 
+  home.sessionVariables = {
+    EDITOR = "rnvim --wait";
+  };
+
   imports = [
     {
       programs.eza = {
