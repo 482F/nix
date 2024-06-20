@@ -1,4 +1,4 @@
-{
+{myLib}: {
   env = {
     hostname = "nixos";
     timeZone = "Etc/UTC";
@@ -29,10 +29,8 @@
     sshd = false;
     certbot = false;
   };
-  modules = builtins.mapAttrs (name: ms: map (m: import m) ms) {
-    home = [
-      # ./private-module-example.nix
-    ];
-    os = [];
+  modules = {
+    home = myLib.importAll ./home;
+    os = myLib.importAll ./os;
   };
 }

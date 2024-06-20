@@ -15,8 +15,8 @@
     ...
   }: let
     user = "nixos";
-    private = import /home/${user}/nix-private;
     myLib = import ./lib {};
+    private = import /home/${user}/nix-private {inherit myLib;};
   in {
     nixosConfigurations = {
       "my-nixos" = nixpkgs.lib.nixosSystem {
