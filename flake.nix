@@ -46,7 +46,7 @@
             myLib.importAll ./os
             ++ importOptionals "os"
             ++ private.modules.os;
-          home = map (m: args: {home-manager.users."${user}" = m args;}) (
+          home = map (m: args: {home-manager.users.${user} = m args;}) (
             myLib.importAll ./home
             ++ importOptionals "home"
             ++ private.modules.home
