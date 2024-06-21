@@ -14,6 +14,9 @@
         ishikawa-r = "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
       };
     };
+    ssh.secretKeys.nixos = [
+      "/path/str/to/id_rsa"
+    ];
     pki.certificates = {
       sb = ''
         -----BEGIN CERTIFICATE-----
