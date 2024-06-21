@@ -21,7 +21,7 @@
           local keyfile="''${_keyfile// /}"
           local pub="$(ssh-keygen -l -f "$keyfile" | grep -Po "^\S+\s\S+")"
           # skip if already exists
-          if ssh-add -l | grep -q "$pub"; then
+          if (ssh-add -l 2>/dev/null || true) | grep -q "$pub"; then
             continue
           fi
           ssh-add "$keyfile"
