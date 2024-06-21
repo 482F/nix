@@ -42,7 +42,7 @@
 
   # jdtls 内の色んな .jar ファイルに書き込み権限が無いと nvim-jdtls がエラーを吐くので、_jdtls にダミーを作ってそれの実体を rsync でデプロイする
   home.activation.deploy-jdtls = config.home-manager.users.${user}.lib.dag.entryAfter ["writeBoundary"] ''
-    run mkdir -p $XDG_DATA_HOME/jdtls
+    run mkdir -p '${config.home-manager.users.${user}.xdg.dataHome}/jdtls'
     run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ~/.local/share/{_,}jdtls/
     run chmod -R 755 ~/.local/share/jdtls
   '';
