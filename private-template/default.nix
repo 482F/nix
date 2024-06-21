@@ -24,12 +24,14 @@
         -----END CERTIFICATE-----
       '';
     };
+    aws.credential = "/path/str/to/.aws/credentials";
   };
   optional = {
     wsl = true;
     docker = false;
     jdtls = false;
     sshd = false;
+    aws = false;
     certbot = false;
   };
   modules = {
