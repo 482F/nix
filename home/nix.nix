@@ -9,9 +9,8 @@
     (myLib.withRuntimeDeps {
       targetDerivation = pkgs.writeScriptBin "nix" ''
         subcommand="''${1:-}"
-        bin=""
-        if [[ -n "$subcommand" ]] && which "nix-$subcommand" > /dev/null 2>&1; then
-          bin="nix-$subcommand"
+        bin="_nix-$subcommand"
+        if [[ -n "$subcommand" ]] && which "$bin" > /dev/null 2>&1; then
           shift 1
         else
           bin="${pkgs.nix.outPath}/bin/nix"
@@ -21,8 +20,8 @@
       '';
       binName = "nix";
       runtimeDepDerivations = [
-        (pkgs.writeScriptBin "nix-ch" ''sudo nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'')
-        (pkgs.writeScriptBin "nix-gc" ''sudo nix store gc && sudo nix-collect-garbage --delete-old'')
+        (pkgs.writeScriptBin "_nix-ch" ''sudo nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'')
+        (pkgs.writeScriptBin "_nix-gc" ''sudo nix store gc && sudo nix-collect-garbage --delete-old'')
       ];
     })
   ];
