@@ -82,26 +82,6 @@
       nix-sw = ''sudo nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'';
     };
     initExtra = ''
-      if [[ $PATH != *:/bin:* ]]; then
-        export PATH="$PATH:/bin"
-        function winpath() {
-          local psh="/mnt/c/windows/System32/WindowsPowerShell/v1.0/powershell.exe"
-          local winpath="$("$psh" echo '$env:PATH')"
-          local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
-
-          local path="$PATH"
-          local filtereds="$(echo "$winpath_w" | while read line; do
-            if [[ "$path" == *$line:* || "$path" == *$line ]]; then
-              continue
-            fi
-            echo -n ":$line"
-          done)"
-          echo "$path$filtereds"
-        }
-
-        export PATH="$(winpath)"
-      fi
-
       bind '"\C-jj":"pushd +1 > /dev/null 2>&1 && pwd"'
       bind '"\C-jk":"pushd -0 > /dev/null 2>&1 && pwd"'
       bind '"\C-ja":"pushd . > /dev/null 2>&1 && pwd"'

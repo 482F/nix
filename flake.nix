@@ -37,10 +37,15 @@
             inherit (private) env;
             inherit user myLib;
           };
-          dep = [
-            nixos-wsl.nixosModules.wsl
-            home-manager.nixosModules.home-manager
-          ];
+          dep =
+            [
+              home-manager.nixosModules.home-manager
+            ]
+            ++ (
+              if private.optional.wsl
+              then [nixos-wsl.nixosModules.wsl]
+              else []
+            );
 
           os =
             myLib.importAll ./os
