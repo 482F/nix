@@ -27,6 +27,11 @@
           "alejandra"
           "prettierd"
           "prettier"
+          "autopep8"
+          {
+            binName = "pg_format";
+            pkgName = "pgformatter";
+          }
 
           # LSPs
           "lua-language-server"
