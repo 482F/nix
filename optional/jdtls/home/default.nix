@@ -8,6 +8,9 @@
 }: {
   home.packages = [
     (myLib.writeScriptBinWithArgs "java17" "${pkgs.jdk17_headless.outPath}/bin/java")
+    (pkgs.maven.override {
+      jdk = pkgs.jdk11_headless;
+    })
   ];
   xdg.dataFile._jdtls.source = let
     jdtls = builtins.fetchurl {
