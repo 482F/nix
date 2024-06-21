@@ -2,6 +2,7 @@
   config,
   pkgs,
   env,
+  user,
   myLib,
   ...
 }: {
@@ -44,4 +45,19 @@
           path = "~/git/tmux-start-daemon/main.ts";
         }
       ]);
+
+  imports = [
+    (myLib.gitClone {
+      homeManagerLib = config.home-manager.users.${user}.lib;
+      cloneRemote = "https://github.com/482F/tmux-start-daemon.git";
+      finalRemote = "git@github.com:482F/tmux-start-daemon.git";
+      dist = "/home/${user}/git/tmux-start-daemon";
+    })
+    (myLib.gitClone {
+      homeManagerLib = config.home-manager.users.${user}.lib;
+      cloneRemote = "https://github.com/482F/misc.git";
+      finalRemote = "git@github.com:482F/misc.git";
+      dist = "/home/${user}/git/misc";
+    })
+  ];
 }
