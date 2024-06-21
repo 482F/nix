@@ -22,6 +22,7 @@
       binName = "nix";
       runtimeDepDerivations = [
         (pkgs.writeScriptBin "nix-sw" ''sudo nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'')
+        (pkgs.writeScriptBin "nix-gc" ''sudo nix store gc && sudo nix-collect-garbage --delete-old'')
       ];
     })
   ];
