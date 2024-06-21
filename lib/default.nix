@@ -15,6 +15,10 @@
         '';
       meta.priority = (targetDerivation.meta.priority or 5) - 1;
     });
-  lazyNixRun = name: pkgs.writeScriptBin name ''nix run nixpkgs#${name} -- "''${@}"'';
+  lazyNixRun = name: let
+    pkgName = name.pkgName or name;
+    binName = name.binName or name;
+  in
+    pkgs.writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "''${@}"'';
   importAll = with builtins; path: map (pathStr: import (path + ("/" + pathStr))) (attrNames (readDir path));
 }
