@@ -79,7 +79,6 @@
     enable = true;
     shellAliases = {
       relogin = "exec \"\${SHELL}\" -l";
-      nix-sw = ''sudo nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'';
     };
     initExtra = ''
       bind '"\C-jj":"pushd +1 > /dev/null 2>&1 && pwd"'
