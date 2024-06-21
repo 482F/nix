@@ -125,6 +125,10 @@
     };
   };
 
+  programs.gh = {
+    enable = true;
+  };
+
   xdg.enable = true;
 
   home.sessionVariables = {
