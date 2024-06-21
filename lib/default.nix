@@ -37,7 +37,7 @@
             if [[ -d '${dist}' ]]; then
               return 0
             fi
-            run nix shell nixpkgs#git nixpkgs#openssh --command git clone '${cloneRemote}' '${dist}'
+            NIX_SSL_CERT_FILE='/etc/ssl/certs/ca-certificates.crt' run nix shell nixpkgs#git nixpkgs#openssh --command git clone '${cloneRemote}' '${dist}'
             cd '${dist}'
             run nix shell nixpkgs#git --command git remote set-url origin '${finalRemote}'
           }
