@@ -10,7 +10,7 @@
     enable = true;
     initExtra = ''
       source ${config.programs.git.package}/share/bash-completion/completions/git-prompt.sh
-      PROMPT_COMMAND="__git_ps1 '\h:\W \u' '\\\$ ' 2>/dev/null; $PROMPT_COMMAND"
+      PROMPT_COMMAND="__git_ps1 '\h \u: \W' '\\\$ ' 2>/dev/null; $PROMPT_COMMAND"
       GIT_PS1_SHOWDIRTYSTATE=true
       GIT_PS1_SHOWSTASHSTATE=true
       GIT_PS1_SHOWUNTRACKEDFILES=true
