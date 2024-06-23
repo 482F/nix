@@ -12,7 +12,20 @@
       psh = "/mnt/c/windows/System32/WindowsPowerShell/v1.0/powershell.exe";
       wsl = "/mnt/c/windows/system32/wsl.exe";
       cmd = "/mnt/c/windows/system32/cmd.exe";
-    });
+    })
+    ++ [
+      (pkgs.writeScriptBin "open" ''
+        if [ $# != 1 ]; then
+          explorer.exe .
+        else
+          if [ -e $1 ]; then
+            cmd /c start $(wslpath -w $1) 2> /dev/null
+          else
+            echo "open: $1 : No such file or directory"
+          fi
+        fi
+      '')
+    ];
 
   programs.bash = {
     enable = true;
