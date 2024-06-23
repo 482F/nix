@@ -25,6 +25,8 @@
       '';
     };
     aws.credential = "/path/str/to/.aws/credentials";
+    jdtls.formatterXml = null;
+    _jdtls.formatterXml = "/path/str/to/jdtls/formatter.xml";
   };
   optional = {
     wsl = true;

@@ -48,22 +48,38 @@
       url = "https://projectlombok.org/downloads/lombok-1.18.32.jar";
       sha256 = "0pd636gpv1zwaxyl05p37m27sy7q1phaqdip65x5cpx2w9s4cmwp";
     };
+    formatterXml =
+      if env.jdtls.formatterXml == null
+      then null
+      else
+        pkgs.writeTextFile {
+          name = "formatter.xml";
+          text = builtins.readFile env.jdtls.formatterXml;
+        };
   in
     (pkgs.stdenv.mkDerivation
       rec {
         name = "jstls";
 
-        unpackPhase = ''
-          mkdir -p "$out"
+        unpackPhase =
+          ''
+            mkdir -p "$out"
 
-          ln -s "${lombok}" "$out/lombok.jar"
+            ln -s "${lombok}" "$out/lombok.jar"
 
-          tar -xf "${jdtls}" -C "$out"
-          ln -s $out/plugins/org.eclipse.equinox.launcher_*.jar "$out/plugins/org.eclipse.equinox.launcher.jar"
+            tar -xf "${jdtls}" -C "$out"
+            ln -s $out/plugins/org.eclipse.equinox.launcher_*.jar "$out/plugins/org.eclipse.equinox.launcher.jar"
 
-          ln -s ${pkgs.vscode-extensions.vscjava.vscode-java-debug.outPath}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar \
-            "$out/com.microsoft.java.debug.plugin.jar"
-        '';
+            ln -s ${pkgs.vscode-extensions.vscjava.vscode-java-debug.outPath}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-*.jar \
+              "$out/com.microsoft.java.debug.plugin.jar"
+          ''
+          + (
+            if formatterXml == null
+            then ""
+            else ''
+              ln -s ${formatterXml} "$out/format-settings.xml"
+            ''
+          );
       })
     .outPath;
 
