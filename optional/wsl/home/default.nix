@@ -29,7 +29,7 @@
 
   programs.bash = {
     enable = true;
-    initExtra =
+    profileExtra =
       # windows の PATH を wsl 側にも適用
       ''
         if [[ $PATH != *:/bin:* ]]; then
