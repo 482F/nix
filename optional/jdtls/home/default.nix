@@ -12,6 +12,33 @@
       jdk = pkgs.jdk11_headless;
     })
   ];
+
+  # 下記のような形式だと何故かプロキシを通ってくれないことがあるので ~/.m2/settings.xml で設定
+  # MAVEN_OPTS="-Dhttp.proxyHost=xxx.xxx.xxx.xxx -Dhttp.proxyPort=xxxxx -Dhttps.proxyHost=xxx.xxx.xxx.xxx -Dhttps.proxyPort=xxxxx" mvn foobar
+  home.file.".m2/settings.xml".text =
+    if env.proxy == null
+    then ""
+    else ''
+      <settings>
+        <proxies>
+         <proxy>
+            <id>sb-http</id>
+            <active>true</active>
+            <protocol>http</protocol>
+            <host>${env.proxy.host}</host>
+            <port>${env.proxy.port}</port>
+          </proxy>
+         <proxy>
+            <id>sb-https</id>
+            <active>true</active>
+            <protocol>https</protocol>
+            <host>${env.proxy.host}</host>
+            <port>${env.proxy.port}</port>
+          </proxy>
+        </proxies>
+      </settings>
+    '';
+
   xdg.dataFile._jdtls.source = let
     jdtls = builtins.fetchurl {
       url = let version = "1.36.0"; in "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/${version}/jdt-language-server-${version}-202405301306.tar.gz";
