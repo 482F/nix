@@ -15,25 +15,27 @@
 
   programs.bash = {
     enable = true;
-    initExtra = ''
-      if [[ $PATH != *:/bin:* ]]; then
-        export PATH="$PATH:/bin"
-        function winpath() {
-          local winpath="$(psh echo '$env:PATH')"
-          local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
+    initExtra =
+      # windows の PATH を wsl 側にも適用
+      ''
+        if [[ $PATH != *:/bin:* ]]; then
+          export PATH="$PATH:/bin"
+          function winpath() {
+            local winpath="$(psh echo '$env:PATH')"
+            local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
 
-          local path="$PATH"
-          local filtereds="$(echo "$winpath_w" | while read line; do
-            if [[ "$path" == *$line:* || "$path" == *$line ]]; then
-              continue
-            fi
-            echo -n ":$line"
-          done)"
-          echo "$path$filtereds"
-        }
+            local path="$PATH"
+            local filtereds="$(echo "$winpath_w" | while read line; do
+              if [[ "$path" == *$line:* || "$path" == *$line ]]; then
+                continue
+              fi
+              echo -n ":$line"
+            done)"
+            echo "$path$filtereds"
+          }
 
-        export PATH="$(winpath)"
-      fi
-    '';
+          export PATH="$(winpath)"
+        fi
+      '';
   };
 }
