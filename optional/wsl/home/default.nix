@@ -34,22 +34,23 @@
       ''
         if [[ $PATH != *:/bin:* ]]; then
           export PATH="$PATH:/bin"
-          function winpath() {
-            local winpath="$(psh echo '$env:PATH')"
-            local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
-
-            local path="$PATH"
-            local filtereds="$(while read -u 10 line; do
-              if [[ "$path" == *$line:* || "$path" == *$line ]]; then
-                continue
-              fi
-              echo -n ":$line"
-            done 10< <(echo "$winpath_w"))"
-            echo "$path$filtereds"
-          }
-
-          export PATH="$(winpath)"
         fi
+
+        function winpath() {
+          local winpath="$(psh echo '$env:PATH')"
+          local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
+
+          local path="$PATH"
+          local filtereds="$(while read -u 10 line; do
+            if [[ "$path" == *$line:* || "$path" == *$line ]]; then
+              continue
+            fi
+            echo -n ":$line"
+          done 10< <(echo "$winpath_w"))"
+          echo "$path$filtereds"
+        }
+
+        export PATH="$(winpath)"
       ''
       # windows の特定の変数を bash 側で使用できるように
       + (let
