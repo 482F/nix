@@ -50,6 +50,25 @@
 
           export PATH="$(winpath)"
         fi
-      '';
+      ''
+      # windows の特定の変数を bash 側で使用できるように
+      + (let
+        winEnvs = [
+          "APPDATA"
+          "USERPROFILE"
+          "LOCALAPPDATA"
+          "WINDIR"
+        ];
+      in ''
+        function set_winenv() {
+          while read -u 10 entry; do
+            local name="$(echo "$entry" | grep -Po "^[^:]+")"
+            local value="$(echo "$entry" | grep -Po ".:[^:]+$")"
+            local value_w="$(wslpath -u "$value")"
+            export "$name=$value_w"
+          done 10< <(psh '${builtins.concatStringsSep "\n" (map (e: "echo ${e}:$env:${e}") winEnvs)}' | grep -Po "[^;\r]+" | sed 's/\\/\\\\/g')
+        }
+        set_winenv
+      '');
   };
 }
