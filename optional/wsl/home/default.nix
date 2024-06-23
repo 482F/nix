@@ -11,6 +11,7 @@
       # TODO: $WINDIR を動的に取得したい
       psh = "/mnt/c/windows/System32/WindowsPowerShell/v1.0/powershell.exe";
       wsl = "/mnt/c/windows/system32/wsl.exe";
+      cmd = "/mnt/c/windows/system32/cmd.exe";
     });
 
   programs.bash = {
