@@ -14,6 +14,8 @@
         exit 0
       fi
       ${pkgs.bash.outPath}/bin/bash --login "$startup"
+
+      while true; do sleep infinity; done
     '';
   };
 }
