@@ -24,7 +24,7 @@
           if (ssh-add -l 2>/dev/null || true) | grep -q "$pub"; then
             continue
           fi
-          ssh-add "$keyfile"
+          ssh-add "$keyfile" < /dev/tty
         done << "  END"
           ${builtins.concatStringsSep "\n" env.ssh.secretKeys.${user}}
         END
