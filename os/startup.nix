@@ -13,8 +13,7 @@
       if [[ ! -f "$startup" ]]; then
         exit 0
       fi
-      . /etc/profile
-      . "$startup"
+      ${pkgs.bash.outPath}/bin/bash --login "$startup"
     '';
   };
 }
