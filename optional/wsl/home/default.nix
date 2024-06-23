@@ -25,12 +25,12 @@
             local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
 
             local path="$PATH"
-            local filtereds="$(echo "$winpath_w" | while read line; do
+            local filtereds="$(while read -u 10 line; do
               if [[ "$path" == *$line:* || "$path" == *$line ]]; then
                 continue
               fi
               echo -n ":$line"
-            done)"
+            done 10< <(echo "$winpath_w"))"
             echo "$path$filtereds"
           }
 

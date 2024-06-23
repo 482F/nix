@@ -17,15 +17,15 @@
     enable = true;
     initExtra = ''
       function ssh-add-if-necessary() {
-        while read _keyfile; do
+        while read -u 10 _keyfile; do
           local keyfile="''${_keyfile// /}"
           local pub="$(ssh-keygen -l -f "$keyfile" | grep -Po "^\S+\s\S+")"
           # skip if already exists
           if (ssh-add -l 2>/dev/null || true) | grep -q "$pub"; then
             continue
           fi
-          ssh-add "$keyfile" < /dev/tty
-        done << "  END"
+          ssh-add "$keyfile"
+        done 10<< "  END"
           ${builtins.concatStringsSep "\n" env.ssh.secretKeys.${user}}
         END
       }
