@@ -8,7 +8,7 @@
 }: {
   imports = [
     (myLib.gitClone {
-      homeManagerLib = config.home-manager.users.${user}.lib;
+      homeManagerLib = config.lib;
       cloneRemote = "https://github.com/482F/dotfiles.git";
       finalRemote = "git@github.com:482F/dotfiles.git";
       dist = "/home/${user}/git/dotfiles";
@@ -27,7 +27,7 @@
 
   home.packages = [
     (myLib.withRuntimeDeps {
-      targetDerivation = config.home-manager.users.nixos.programs.neovim.finalPackage;
+      targetDerivation = config.programs.neovim.finalPackage;
       binName = "nvim";
       runtimeDepDerivations =
         (map myLib.lazyNixRun [

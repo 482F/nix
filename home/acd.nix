@@ -31,7 +31,7 @@
   };
   imports = [
     (myLib.gitClone {
-      homeManagerLib = config.home-manager.users.${user}.lib;
+      homeManagerLib = config.lib;
       cloneRemote = "https://github.com/482F/misc.git";
       finalRemote = "git@github.com:482F/misc.git";
       dist = "/home/${user}/git/misc";
