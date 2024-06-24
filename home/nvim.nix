@@ -11,17 +11,15 @@
       homeManagerLib = config.lib;
       cloneRemote = "https://github.com/482F/dotfiles.git";
       finalRemote = "git@github.com:482F/dotfiles.git";
-      dist = "/home/${user}/git/dotfiles";
+      dist = "${config.home.homeDirectory}/git/dotfiles";
     })
   ];
 
   programs.neovim = {
     enable = true;
-    extraLuaConfig = let
-      HOME = "/home/${user}";
-    in ''
-      vim.opt.rtp:prepend('${HOME}/git/dotfiles/.config/nvim/')
-      vim.cmd.luafile('${HOME}/git/dotfiles/.config/nvim/init.lua')
+    extraLuaConfig = ''
+      vim.opt.rtp:prepend('${config.home.homeDirectory}/git/dotfiles/.config/nvim/')
+      vim.cmd.luafile('${config.home.homeDirectory}/git/dotfiles/.config/nvim/init.lua')
     '';
   };
 

@@ -31,7 +31,7 @@
       homeManagerLib = config.lib;
       cloneRemote = "https://github.com/482F/dotfiles.git";
       finalRemote = "git@github.com:482F/dotfiles.git";
-      dist = "/home/${user}/git/dotfiles";
+      dist = "${config.home.homeDirectory}/git/dotfiles";
     })
   ];
 }

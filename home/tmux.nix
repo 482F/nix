@@ -19,7 +19,7 @@
       alias tmux=_tmux
 
       if [ -z "''${TMUX}" ]; then
-        if [ "$(pwd)" = "/home/${user}" ]; then
+        if [ "$(pwd)" = "${config.home.homeDirectory}" ]; then
           _tmux; exit
         fi
       fi

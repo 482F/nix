@@ -11,7 +11,7 @@
     initExtra = ''
       export ACD_PORT=55812
 
-      PATH_TO_ACD="/home/${user}/git/misc/acd.ts"
+      PATH_TO_ACD="${config.home.homeDirectory}/git/misc/acd.ts"
       alias acdts="''${PATH_TO_ACD}"
       function acd() {
         if [[ "''${1:-}" == "completions" ]]; then
@@ -34,7 +34,7 @@
       homeManagerLib = config.lib;
       cloneRemote = "https://github.com/482F/misc.git";
       finalRemote = "git@github.com:482F/misc.git";
-      dist = "/home/${user}/git/misc";
+      dist = "${config.home.homeDirectory}/git/misc";
     })
   ];
 }
