@@ -20,7 +20,16 @@
     binName = name.binName or name;
   in
     pkgs.writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "''${@}"'';
-  importAll = with builtins; path: map (pathStr: import (path + ("/" + pathStr))) (attrNames (readDir path));
+  importAll = with builtins;
+    path:
+      pkgs.lib.lists.flatten (attrValues (mapAttrs (
+        pathStr: type: let
+          fullPath = path + ("/" + pathStr);
+        in
+          if type == "directory"
+          then importAll fullPath
+          else import fullPath
+      ) (readDir path)));
 
   # `imports = [(myLib.gitClone { ... })]`
   gitClone = {
