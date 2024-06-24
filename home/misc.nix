@@ -23,6 +23,8 @@
   # environment.
   home.packages = [
     pkgs.oath-toolkit
+    pkgs.wget
+    pkgs.unzip
 
     (pkgs.stdenv.mkDerivation rec {
       pname = "win32yank";
