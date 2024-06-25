@@ -5,7 +5,9 @@
   myLib,
   user,
   ...
-}: {
+}: let
+  jdtls-dir = "${config.xdg.dataHome}/jdtls";
+in {
   home.packages = [
     (myLib.writeScriptBinWithArgs "java17" "${pkgs.jdk17_headless.outPath}/bin/java")
     (pkgs.maven.override {
@@ -85,8 +87,8 @@
 
   # jdtls 内の色んな .jar ファイルに書き込み権限が無いと nvim-jdtls がエラーを吐くので、_jdtls にダミーを作ってそれの実体を rsync でデプロイする
   home.activation.deploy-jdtls = config.lib.dag.entryAfter ["writeBoundary"] ''
-    run mkdir -p '${config.xdg.dataHome}/jdtls'
-    run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ~/.local/share/{_,}jdtls/
-    run chmod -R 755 ~/.local/share/jdtls
+    run mkdir -p '${jdtls-dir}'
+    run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ${config.xdg.dataHome}/{_,}jdtls/
+    run chmod -R 755 '${jdtls-dir}'
   '';
 }
