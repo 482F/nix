@@ -7,12 +7,41 @@
   ...
 }: let
   jdtls-dir = "${config.xdg.dataHome}/jdtls";
+  java-cacerts-path = "${jdtls-dir}/java-cacerts";
 in {
-  home.packages = [
-    (myLib.writeScriptBinWithArgs "java17" "${pkgs.jdk17_headless.outPath}/bin/java")
-    (pkgs.maven.override {
+  # 独自 SSL 証明書を含む java-cacerts を作成
+  home.activation.java-cacerts = config.lib.dag.entryAfter ["writeBoundary"] ''
+    run mkdir -p '${jdtls-dir}'
+    run ${pkgs.p11-kit.bin}/bin/trust extract --format=java-cacerts --purpose=server-auth ${java-cacerts-path}
+  '';
+
+  # mkJavaDerivation 内で export しても、nvim-jdtls 経由で起動したデバッグセッションに環境変数が反映されないのでグローバル定義
+  home.sessionVariables = {
+    JAVAX_NET_SSL_TRUSTSTORE = java-cacerts-path;
+  };
+  home.packages = let
+    mkJavaDerivation = javapkg: destName:
+      pkgs.writeScriptBin destName ''
+        ${javapkg.outPath}/bin/java \
+          -Dhttps.proxyHost=${env.proxy.host or ""} \
+          -Dhttp.proxyHost=${env.proxy.host or ""} \
+          -Dhttps.proxyPort=${env.proxy.port or ""} \
+          -Dhttp.proxyPort=${env.proxy.port or ""} \
+          -Djavax.net.ssl.trustStore=${java-cacerts-path} \
+          "$@"
+      '';
+    mvnJava = mkJavaDerivation pkgs.jdk11_headless "java";
+    java11 = mkJavaDerivation pkgs.jdk11_headless "java11";
+    java17 = mkJavaDerivation pkgs.jdk17_headless "java17";
+    rawMvn = pkgs.maven.override {
       jdk = pkgs.jdk11_headless;
-    })
+    };
+  in [
+    java11
+    java17
+    (pkgs.writeScriptBin "mvn" ''
+      JAVA_HOME=${mvnJava} ${rawMvn}/bin/mvn "$@"
+    '')
   ];
 
   # 下記のような形式だと何故かプロキシを通ってくれないことがあるので ~/.m2/settings.xml で設定
