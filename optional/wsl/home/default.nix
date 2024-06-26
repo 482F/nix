@@ -39,6 +39,8 @@
 
       touch /tmp/suppress-startup
 
+      history -a
+
       psh Start-Process -WindowStyle Hidden -FilePath powershell -ArgumentList "\"
         wsl --terminate "$distro"
         for (\`\$i=0; \`\$i -lt 10; \`\$i++) {
