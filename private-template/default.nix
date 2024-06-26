@@ -35,6 +35,7 @@
     sshd = false;
     aws = false;
     certbot = false;
+    nodejs = false;
   };
   modules = {
     home = myLib.importAll ./home;
