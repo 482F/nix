@@ -33,6 +33,8 @@
           exit 1
         fi
 
+        touch /tmp/suppress-startup
+
         psh Start-Process -WindowStyle Hidden -FilePath wsl -ArgumentList "\"
           wsl --terminate "$distro"
 
