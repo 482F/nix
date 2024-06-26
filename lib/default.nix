@@ -15,6 +15,15 @@
         '';
       meta.priority = (targetDerivation.meta.priority or 5) - 1;
     });
+  aliasEvalFn = name: fnBody:
+    builtins.listToAttrs [
+      {
+        inherit name;
+        value = let
+          script = pkgs.writeScriptBin name fnBody;
+        in ''function _${name}() { eval "$(< ${script}/bin/${name})"; unset -f _${name}; }; _${name}'';
+      }
+    ];
   lazyNixRun = name: let
     pkgName = name.pkgName or name;
     binName = name.binName or name;
