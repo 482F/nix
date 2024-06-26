@@ -25,6 +25,23 @@
           fi
         fi
       '')
+      (pkgs.writeScriptBin "lock" ''rundll32.exe user32.dll,LockWorkStation'')
+      (pkgs.writeScriptBin "reboot" ''
+        distro="$1"
+        if [[ -z "$distro" ]]; then
+          echo argument is required >&2
+          exit 1
+        fi
+
+        psh Start-Process -WindowStyle Hidden -FilePath wsl -ArgumentList "\"
+          wsl --terminate "$distro"
+
+          for (\`\$i=0; \`\$i -lt 10; \`\$i++) {
+            sleep 1
+            wsl -d "$distro" echo boot "$distro"
+          }
+        \""
+      '')
     ];
 
   programs.bash = {
