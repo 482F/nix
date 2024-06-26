@@ -26,28 +26,27 @@
         fi
       '')
       (pkgs.writeScriptBin "lock" ''rundll32.exe user32.dll,LockWorkStation'')
-      (pkgs.writeScriptBin "reboot" ''
-        distro="$1"
-        if [[ -z "$distro" ]]; then
-          echo argument is required >&2
-          exit 1
-        fi
-
-        touch /tmp/suppress-startup
-
-        psh Start-Process -WindowStyle Hidden -FilePath wsl -ArgumentList "\"
-          wsl --terminate "$distro"
-
-          for (\`\$i=0; \`\$i -lt 10; \`\$i++) {
-            sleep 1
-            wsl -d "$distro" echo boot "$distro"
-          }
-        \""
-      '')
     ];
 
   programs.bash = {
     enable = true;
+    shellAliases = myLib.aliasEvalFn "reboot" ''
+      distro="$1"
+      if [[ -z "$distro" ]]; then
+        echo argument is required >&2
+        return 1
+      fi
+
+      touch /tmp/suppress-startup
+
+      psh Start-Process -WindowStyle Hidden -FilePath powershell -ArgumentList "\"
+        wsl --terminate "$distro"
+        for (\`\$i=0; \`\$i -lt 10; \`\$i++) {
+          sleep 1
+          wsl -d "nixos" echo boot "$distro"
+        }
+      \""
+    '';
     profileExtra =
       # windows の PATH を wsl 側にも適用
       ''
