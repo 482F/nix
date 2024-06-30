@@ -20,7 +20,7 @@
       '';
       binName = "nix";
       runtimeDepDerivations = [
-        (pkgs.writeScriptBin "_nix-ch" ''sudo NIXPKGS_ALLOW_INSECURE=1 nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'')
+        (pkgs.writeScriptBin "_nix-ch" ''sudo NIXPKGS_ALLOW_UNFREE=1 NIXPKGS_ALLOW_INSECURE=1 nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'')
         (pkgs.writeScriptBin "_nix-gc" ''sudo nix store gc && sudo nix-collect-garbage --delete-old'')
       ];
     })
