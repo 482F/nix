@@ -1,5 +1,19 @@
 {pkgs ? import <nixpkgs> {}}: rec {
   writeScriptBinWithArgs = binName: script: (pkgs.writeScriptBin binName ''${script} "''${@}"'');
+  writeBgScriptBin = binName: script: (
+    let
+      scriptPath = (pkgs.writeScriptBin binName ''${script} "$@"'').outPath;
+    in
+      pkgs.writeScriptBin binName ''
+        command="${scriptPath}/bin/${binName}"
+        if [[ "$1" == "--fg" ]]; then
+          shift 1
+          "$command" "$@"
+        else
+          nohup "$command" "$@" > /dev/null 2>&1 &
+        fi
+      ''
+  );
   withRuntimeDeps = {
     targetDerivation,
     binName,
