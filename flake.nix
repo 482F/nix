@@ -14,9 +14,9 @@
     home-manager,
     ...
   }: let
-    user = "nixos";
+    private = import /nix-private {inherit myLib;};
+    user = private.env.username;
     myLib = import ./lib {};
-    private = import /home/${user}/nix-private {inherit myLib;};
   in {
     nixosConfigurations = {
       "my-nixos" = nixpkgs.lib.nixosSystem {

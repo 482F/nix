@@ -1,6 +1,7 @@
 {myLib}: {
   env = {
     hostname = "nixos";
+    username = "nixos";
     timeZone = "Etc/UTC";
     proxy = null;
     _proxy = {

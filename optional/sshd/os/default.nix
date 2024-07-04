@@ -3,6 +3,7 @@
   lib,
   pkgs,
   env,
+  user,
   ...
 }: {
   services.openssh = lib.mkIf (env.sshd != null) {
@@ -14,5 +15,5 @@
       PasswordAuthentication = false;
     };
   };
-  users.users.nixos.openssh.authorizedKeys.keys = builtins.attrValues env.sshd.authorizedKeys;
+  users.users.${user}.openssh.authorizedKeys.keys = builtins.attrValues env.sshd.authorizedKeys;
 }
