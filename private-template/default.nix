@@ -2,6 +2,11 @@
   env = {
     hostname = "nixos";
     username = "nixos";
+    passhashes = {
+      # mkpasswd -m sha-512
+      nixos = "$6$KqQFPMIXN3hgNLoz$XT3uhwp8xZxhFBOBMNAH5fdgbyMFpp4dZYf1AucAexi33M4FPFVXLikdtg6T0PgME7EHYYQZZzhhy2CPS9rj7.";
+    };
+
     timeZone = "Etc/UTC";
     proxy = null;
     _proxy = {

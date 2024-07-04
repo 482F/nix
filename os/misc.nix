@@ -26,7 +26,10 @@
     };
   };
 
+  users.users = builtins.mapAttrs (name: hash: {hashedPassword = hash;}) env.passhashes;
+  users.mutableUsers = false;
   security.pki.certificates = builtins.attrValues env.pki.certificates;
+  security.sudo.wheelNeedsPassword = true;
 
   networking = {
     hostName = env.hostname;
