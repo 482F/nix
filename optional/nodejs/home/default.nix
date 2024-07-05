@@ -29,5 +29,6 @@
         nodeVersion = "16.20.2";
         nodeSha256 = "sha256-V28aA8RV5JGo0TK1h+trO4RlH8iXS7NjhDPdRNIsj0k=";
       }
-    ];
+    ]
+    ++ [pkgs.yarn];
 }
