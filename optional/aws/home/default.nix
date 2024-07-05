@@ -13,6 +13,7 @@
     settings = {
       default = {
         output = "json";
+        region = "ap-northeast-1";
       };
     };
   };
