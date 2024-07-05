@@ -1,5 +1,5 @@
 {pkgs ? import <nixpkgs> {}}: rec {
-  writeScriptBinWithArgs = binName: script: (pkgs.writeScriptBin binName ''${script} "''${@}"'');
+  writeScriptBinWithArgs = binName: script: (pkgs.writeScriptBin binName ''${script} "$@"'');
   writeBgScriptBin = binName: script: (
     let
       scriptPath = (pkgs.writeScriptBin binName ''${script} "$@"'').outPath;
@@ -42,7 +42,7 @@
     pkgName = name.pkgName or name;
     binName = name.binName or name;
   in
-    pkgs.writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "''${@}"'';
+    pkgs.writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "$@"'';
   importAll = with builtins;
     path:
       pkgs.lib.lists.flatten (attrValues (mapAttrs (

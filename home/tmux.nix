@@ -12,13 +12,13 @@
           if [ "''${1:-}" = "" ]; then
               tmux attach -t main || tmux new -s main
           else
-              tmux "''${@}"
+              tmux "$@"
           fi
       }
 
       alias tmux=_tmux
 
-      if [ -z "''${TMUX}" ]; then
+      if [ -z "$TMUX" ]; then
         if [ "$(pwd)" = "${config.home.homeDirectory}" ]; then
           _tmux; exit
         fi
