@@ -90,7 +90,7 @@ in {
   in
     (pkgs.stdenv.mkDerivation
       rec {
-        name = "jstls";
+        name = "jdtls";
 
         unpackPhase =
           ''
