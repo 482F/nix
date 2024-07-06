@@ -34,7 +34,10 @@
           "alejandra"
           "prettierd"
           "prettier"
-          "autopep8"
+          {
+            binName = "autopep8";
+            pkgName = "python312Packages.autopep8";
+          }
           {
             binName = "pg_format";
             pkgName = "pgformatter";
@@ -42,7 +45,10 @@
 
           # LSPs
           "lua-language-server"
-          "python-lsp-server"
+          {
+            binName = "pylsp";
+            pkgName = "python312Packages.python-lsp-server";
+          }
         ])
         ++ [
           pkgs.gcc # for treesitter
