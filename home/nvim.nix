@@ -42,14 +42,14 @@
 
           # LSPs
           "lua-language-server"
-          "typescript-language-server"
-          "vue-language-server"
           "python-lsp-server"
         ])
         ++ [
           pkgs.gcc # for treesitter
           pkgs.ripgrep # for telescope
           pkgs.fd # for telescope
+          (myLib.writeScriptBinWithArgs "vue-language-server" "deno run -A npm:@vue/language-server@latest")
+          (myLib.writeScriptBinWithArgs "typescript-language-server" "deno run -A npm:typescript-language-server@latest")
         ];
     })
 
