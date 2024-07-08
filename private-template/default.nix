@@ -42,6 +42,7 @@
     aws = false;
     certbot = false;
     nodejs = false;
+    python = false;
   };
   modules = {
     home = myLib.importAll ./home;

@@ -47,9 +47,6 @@
           "lua-language-server"
         ])
         ++ [
-          pkgs.python312Packages.python-lsp-server
-          pkgs.python312Packages.pylint
-
           pkgs.gcc # for treesitter
           pkgs.ripgrep # for telescope
           pkgs.fd # for telescope
