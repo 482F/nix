@@ -4,15 +4,17 @@
   pkgs,
   user,
   ...
-}: {
+}: let
+  inherit (lib) mkOption types;
+in {
   options = {
-    my.systemd.timer = lib.mkOption {
+    my.systemd.timer = mkOption {
       default = {};
-      type = lib.types.attrsOf (lib.types.submodule {
+      type = types.attrsOf (types.submodule {
         options = {
-          description = lib.mkOption {type = lib.types.str;};
-          onCalendar = lib.mkOption {type = lib.types.listOf lib.types.str;};
-          script = lib.mkOption {type = lib.types.str;};
+          description = mkOption {type = types.str;};
+          onCalendar = mkOption {type = types.listOf types.str;};
+          script = mkOption {type = types.str;};
         };
       });
     };
