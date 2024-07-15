@@ -33,7 +33,7 @@
 
   networking = {
     hostName = env.hostname;
-    proxy = lib.mkIf (env.proxy != null) (
+    proxy = lib.mkIf ((env.proxy or null) != null) (
       let
         proxy = lib.strings.concatStrings ["http://" env.proxy.host ":" env.proxy.port];
       in {

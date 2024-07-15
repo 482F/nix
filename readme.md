@@ -35,7 +35,7 @@ nixevalenv 'builtins.concatStringsSep "\n" (builtins.attrValues env.pki.certific
 if [ -n "$(cat /tmp/init.crt)" ]; then
     export NIX_SSL_CERT_FILE="/tmp/init.crt"
 fi
-export HTTPS_PROXY="$(nixevalenv 'if (env.proxy != null) then builtins.concatStringsSep "" [ "http://" env.proxy.host ":" env.proxy.port ] else ""')"
+export HTTPS_PROXY="$(nixevalenv 'if ((env.proxy or null) != null) then builtins.concatStringsSep "" [ "http://" env.proxy.host ":" env.proxy.port ] else ""')"
 export NIXPKGS_ALLOW_UNFREE=1
 export NIXPKGS_ALLOW_INSECURE=1
 

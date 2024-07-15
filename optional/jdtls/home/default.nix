@@ -46,29 +46,31 @@ in {
 
   # 下記のような形式だと何故かプロキシを通ってくれないことがあるので ~/.m2/settings.xml で設定
   # MAVEN_OPTS="-Dhttp.proxyHost=xxx.xxx.xxx.xxx -Dhttp.proxyPort=xxxxx -Dhttps.proxyHost=xxx.xxx.xxx.xxx -Dhttps.proxyPort=xxxxx" mvn foobar
-  home.file.".m2/settings.xml".text =
-    if env.proxy == null
-    then ""
-    else ''
-      <settings>
-        <proxies>
-         <proxy>
-            <id>sb-http</id>
-            <active>true</active>
-            <protocol>http</protocol>
-            <host>${env.proxy.host}</host>
-            <port>${env.proxy.port}</port>
-          </proxy>
-         <proxy>
-            <id>sb-https</id>
-            <active>true</active>
-            <protocol>https</protocol>
-            <host>${env.proxy.host}</host>
-            <port>${env.proxy.port}</port>
-          </proxy>
-        </proxies>
-      </settings>
-    '';
+  home.file.".m2/settings.xml" = rec {
+    enable = (env.proxy or null) != null;
+    text = if enable
+      then ''
+        <settings>
+          <proxies>
+           <proxy>
+              <id>sb-http</id>
+              <active>true</active>
+              <protocol>http</protocol>
+              <host>${env.proxy.host}</host>
+              <port>${env.proxy.port}</port>
+            </proxy>
+           <proxy>
+              <id>sb-https</id>
+              <active>true</active>
+              <protocol>https</protocol>
+              <host>${env.proxy.host}</host>
+              <port>${env.proxy.port}</port>
+            </proxy>
+          </proxies>
+        </settings>
+      ''
+      else null;
+  };
 
   xdg.dataFile._jdtls.source = let
     jdtls = builtins.fetchurl {
