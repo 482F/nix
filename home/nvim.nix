@@ -33,7 +33,6 @@
           "stylua"
           "alejandra"
           "prettierd"
-          "prettier"
           {
             binName = "autopep8";
             pkgName = "python312Packages.autopep8";
@@ -52,6 +51,7 @@
           pkgs.fd # for telescope
           (myLib.writeScriptBinWithArgs "vue-language-server" "deno run -A npm:@vue/language-server@latest")
           (myLib.writeScriptBinWithArgs "typescript-language-server" "deno run -A npm:typescript-language-server@latest")
+          (myLib.writeScriptBinWithArgs "prettier" "deno run --allow-sys --allow-env --allow-read npm:prettier@latest")
         ];
     })
 
