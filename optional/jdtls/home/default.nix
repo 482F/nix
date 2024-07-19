@@ -48,7 +48,8 @@ in {
   # MAVEN_OPTS="-Dhttp.proxyHost=xxx.xxx.xxx.xxx -Dhttp.proxyPort=xxxxx -Dhttps.proxyHost=xxx.xxx.xxx.xxx -Dhttps.proxyPort=xxxxx" mvn foobar
   home.file.".m2/settings.xml" = rec {
     enable = (env.proxy or null) != null;
-    text = if enable
+    text =
+      if enable
       then ''
         <settings>
           <proxies>
@@ -71,6 +72,26 @@ in {
       ''
       else null;
   };
+
+  xdg.dataFile.jdks.source = let
+    jdks = {
+      "JavaSE-11" = pkgs.jdk11_headless;
+    };
+  in
+    (pkgs.stdenv.mkDerivation rec {
+      name = "jdks";
+      unpackPhase =
+        ''
+          mkdir -p "$out"
+        ''
+        + (
+          with builtins;
+            concatStringsSep
+            "\n"
+            (attrValues (mapAttrs (name: jdk: "ln -s ${jdk}/lib/openjdk $out/${name}") jdks))
+        );
+    })
+    .outPath;
 
   xdg.dataFile._jdtls.source = let
     jdtls = builtins.fetchurl {
