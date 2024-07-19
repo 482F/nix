@@ -43,6 +43,7 @@
     certbot = false;
     nodejs = false;
     python = false;
+    mp3 = false;
   };
   modules = {
     home = myLib.importAll ./home;
