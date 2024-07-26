@@ -44,6 +44,7 @@
     nodejs = false;
     python = false;
     mp3 = false;
+    rust = false;
   };
   modules = {
     home = myLib.importAll ./home;
