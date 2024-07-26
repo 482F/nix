@@ -33,6 +33,10 @@
           path = "~/git/misc/git-commands/git-dH";
         }
         {
+          name = "git-init-push";
+          path = "~/git/misc/git-commands/git-init-push";
+        }
+        {
           name = "pyobj-to-json";
           path = "~/git/misc/pyobj-to-json.ts";
         }
