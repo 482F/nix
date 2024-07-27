@@ -17,7 +17,8 @@
   withRuntimeDeps = {
     targetDerivation,
     binName,
-    runtimeDepDerivations,
+    runtimeDepDerivations ? [],
+    runtimeDepPaths ? [],
   }:
     (writeScriptBinWithArgs binName "${targetDerivation.outPath}/bin/${binName}")
     .overrideAttrs (attrs: {
@@ -26,7 +27,14 @@
         attrs.buildCommand
         + ''
           wrapProgram $out/bin/${binName} --prefix PATH : ${pkgs.lib.makeBinPath runtimeDepDerivations}
-        '';
+        ''
+        + (
+          with builtins;
+            concatStringsSep "\n" (
+              map (path: "wrapProgram $out/bin/${binName} --prefix PATH : ${path}")
+              runtimeDepPaths
+            )
+        );
       meta.priority = (targetDerivation.meta.priority or 5) - 1;
     });
   aliasEvalFn = name: fnBody:
