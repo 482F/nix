@@ -17,26 +17,6 @@
         myLib.writeScriptBinWithArgs name "sb ${path}")
       [
         {
-          name = "git-zrb";
-          path = "~/git/misc/git-commands/git-zrb";
-        }
-        {
-          name = "git-zco";
-          path = "~/git/misc/git-commands/git-zco";
-        }
-        {
-          name = "git-chh";
-          path = "~/git/misc/git-commands/git-chh";
-        }
-        {
-          name = "git-dH";
-          path = "~/git/misc/git-commands/git-dH";
-        }
-        {
-          name = "git-init-push";
-          path = "~/git/misc/git-commands/git-init-push";
-        }
-        {
           name = "pyobj-to-json";
           path = "~/git/misc/pyobj-to-json.ts";
         }

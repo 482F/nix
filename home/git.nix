@@ -25,6 +25,13 @@
       {path = "~/git/dotfiles/.gitconfig";}
     ];
   };
+  home.packages = [
+    (myLib.withRuntimeDeps {
+      targetDerivation = config.programs.git.package;
+      binName = "git";
+      runtimeDepPaths = ["${config.home.homeDirectory}/git/misc/git-commands"];
+    })
+  ];
 
   imports = [
     (myLib.gitClone {
