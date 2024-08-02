@@ -25,6 +25,10 @@
           path = "~/git/misc/sleep-until.ts";
         }
         {
+          name = "deno-build";
+          path = "~/git/misc/deno-build.ts";
+        }
+        {
           name = "tsd";
           path = "~/git/tmux-start-daemon/main.ts";
         }
