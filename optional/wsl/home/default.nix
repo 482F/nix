@@ -14,7 +14,7 @@
       cmd = "/mnt/c/windows/system32/cmd.exe";
     })
     ++ [
-      (pkgs.writeScriptBin "open" ''
+      (myLib.writeScriptBin "open" ''
         if [ $# != 1 ]; then
           explorer.exe .
         else
@@ -25,13 +25,13 @@
           fi
         fi
       '')
-      (pkgs.writeScriptBin "lock" ''rundll32.exe user32.dll,LockWorkStation'')
+      (myLib.writeScriptBin "lock" ''rundll32.exe user32.dll,LockWorkStation'')
     ];
 
   programs.bash = {
     enable = true;
     shellAliases = myLib.aliasEvalFn "reboot" ''
-      distro="$1"
+      distro="''${1:-}"
       if [[ -z "$distro" ]]; then
         echo argument is required >&2
         return 1

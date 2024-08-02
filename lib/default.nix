@@ -1,12 +1,19 @@
 {pkgs ? import <nixpkgs> {}}: rec {
-  writeScriptBinWithArgs = binName: script: (pkgs.writeScriptBin binName ''${script} "$@"'');
+  writeScriptBin = binName: script: (pkgs.writeScriptBin binName ''
+    #!/usr/bin/env bash
+
+    set -ue -o pipefail
+
+    ${script}
+  '');
+  writeScriptBinWithArgs = binName: script: (writeScriptBin binName ''${script} "$@"'');
   writeBgScriptBin = binName: script: (
     let
-      scriptPath = (pkgs.writeScriptBin binName ''${script} "$@"'').outPath;
+      scriptPath = (writeScriptBin binName ''${script} "$@"'').outPath;
     in
-      pkgs.writeScriptBin binName ''
+      writeScriptBin binName ''
         command="${scriptPath}/bin/${binName}"
-        if [[ "$1" == "--fg" ]]; then
+        if [[ "''${1:-}" == "--fg" ]]; then
           shift 1
           "$command" "$@"
         else
@@ -42,7 +49,7 @@
       {
         inherit name;
         value = let
-          script = pkgs.writeScriptBin name fnBody;
+          script = writeScriptBin name fnBody;
         in ''function _${name}() { eval "$(< ${script}/bin/${name})"; unset -f _${name}; }; _${name}'';
       }
     ];
@@ -50,7 +57,7 @@
     pkgName = name.pkgName or name;
     binName = name.binName or name;
   in
-    pkgs.writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "$@"'';
+    writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "$@"'';
   importAll = with builtins;
     path:
       pkgs.lib.lists.flatten (attrValues (mapAttrs (

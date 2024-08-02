@@ -21,7 +21,7 @@ in {
   };
   home.packages = let
     mkJavaDerivation = javapkg: destName:
-      pkgs.writeScriptBin destName ''
+      myLib.writeScriptBin destName ''
         ${javapkg.outPath}/bin/java \
           -Dhttps.proxyHost=${env.proxy.host or ""} \
           -Dhttp.proxyHost=${env.proxy.host or ""} \
@@ -39,7 +39,7 @@ in {
   in [
     java11
     java17
-    (pkgs.writeScriptBin "mvn" ''
+    (myLib.writeScriptBin "mvn" ''
       JAVA_HOME=${mvnJava} ${rawMvn}/bin/mvn "$@"
     '')
   ];
