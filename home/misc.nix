@@ -82,6 +82,7 @@
     shellAliases = {
       relogin = "exec \"\${SHELL}\" -l";
       suntil = ''function suntil() { tsd start "sleep-until 15:00 && $@"; }; suntil'';
+      ".." = "cd ..";
     };
     initExtra = ''
       bind '"\C-jj":"pushd +1 > /dev/null 2>&1 && pwd"'
