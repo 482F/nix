@@ -91,6 +91,7 @@
       bind '"\C-jl":"dirs -p -v"'
       bind -x '"\C-x\C-f":"fg"'
     '';
+    historyFileSize = 10000000;
   };
 
   programs.readline = {
