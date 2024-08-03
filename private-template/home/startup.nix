@@ -4,7 +4,7 @@
   env,
   ...
 }: {
-  home.file."startup.sh".text = ''
+  my.startup.script = ''
     touch ~/startupped
   '';
 }
