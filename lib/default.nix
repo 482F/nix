@@ -93,4 +93,12 @@
       }
     ];
   };
+  filterAttrs = f: set:
+    with builtins;
+      listToAttrs
+      (
+        filter
+        (entry: f entry.neme entry.value)
+        (attrValues (mapAttrs (name: value: {inherit name value;}) set))
+      );
 }
