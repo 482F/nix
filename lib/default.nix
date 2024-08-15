@@ -9,7 +9,7 @@
   writeScriptBinWithArgs = binName: script: (writeScriptBin binName ''${script} "$@"'');
   writeBgScriptBin = binName: script: (
     let
-      scriptPath = (writeScriptBin binName ''${script} "$@"'').outPath;
+      scriptPath = (writeScriptBin binName ''${script}'').outPath;
     in
       writeScriptBin binName ''
         command="${scriptPath}/bin/${binName}"
