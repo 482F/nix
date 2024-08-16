@@ -46,8 +46,5 @@
     mp3 = false;
     rust = false;
   };
-  modules = {
-    home = myLib.importAll ./home;
-    os = myLib.importAll ./os;
-  };
+  modules = myLib.importAll ./module;
 }
