@@ -143,4 +143,6 @@ in {
     run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ${config.xdg.dataHome}/{_,}jdtls/
     run chmod -R 755 '${jdtls-dir}'
   '';
+
+  my.gc.maven.script = ''rm -rf ~/.m2/repository/*'';
 }

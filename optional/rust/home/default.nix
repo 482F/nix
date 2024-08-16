@@ -14,4 +14,6 @@
   home.sessionVariables = {
     RUST_SRC_PATH = pkgs.rust.packages.stable.rustPlatform.rustLibSrc;
   };
+
+  my.gc.rust.script = ''rm -rf ~/.cargo/*'';
 }

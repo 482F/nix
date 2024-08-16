@@ -8,7 +8,8 @@
 }: {
   home.file.".docker/config.json" = rec {
     enable = (env.proxy or null) != null;
-    text = if enable
+    text =
+      if enable
       then ''
         {
           "proxies": {
@@ -22,4 +23,5 @@
       ''
       else null;
   };
+  my.gc.docker.script = ''docker system prune --volumes -a'';
 }

@@ -31,4 +31,6 @@
       }
     ]
     ++ [pkgs.yarn];
+
+  my.gc.yarn.script = ''rm -rf ~/.cache/yarn/*'';
 }

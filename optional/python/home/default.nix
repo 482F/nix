@@ -14,4 +14,6 @@
   home.sessionVariables = {
     CURL_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt";
   };
+
+  my.gc.poetry.script = ''rm -rf ~/.cache/pypoetry/*'';
 }
