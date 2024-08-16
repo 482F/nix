@@ -94,7 +94,8 @@
       })
       .outPath;
 
-    xdg.dataFile._jdtls.source = let
+    # jdtls 内の色んな .jar ファイルに書き込み権限が無いと nvim-jdtls がエラーを吐くので実体を rsync でデプロイする
+    home.activation.deploy-jdtls = let
       jdtls = builtins.fetchurl {
         url = let version = "1.36.0"; in "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/${version}/jdt-language-server-${version}-202405301306.tar.gz";
         sha256 = "0yxf7nq7y6v5cya5vl662dbgda0lyjgghmpx9ynir9pl0r6jg3h2";
@@ -111,8 +112,8 @@
             name = "formatter.xml";
             text = builtins.readFile env.jdtls.formatterXml;
           };
-    in
-      (pkgs.stdenv.mkDerivation
+      my-jdtls =
+        pkgs.stdenv.mkDerivation
         rec {
           name = "jdtls";
 
@@ -135,15 +136,13 @@
                 ln -s ${formatterXml} "$out/format-settings.xml"
               ''
             );
-        })
-      .outPath;
-
-    # jdtls 内の色んな .jar ファイルに書き込み権限が無いと nvim-jdtls がエラーを吐くので、_jdtls にダミーを作ってそれの実体を rsync でデプロイする
-    home.activation.deploy-jdtls = config.lib.dag.entryAfter ["writeBoundary"] ''
-      run mkdir -p '${jdtls-dir}'
-      run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ${config.xdg.dataHome}/{_,}jdtls/
-      run chmod -R 755 '${jdtls-dir}'
-    '';
+        };
+    in
+      config.lib.dag.entryAfter ["writeBoundary"] ''
+        run mkdir -p '${jdtls-dir}'
+        run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ${my-jdtls}/ ${config.xdg.dataHome}/jdtls/
+        run chmod -R 755 '${jdtls-dir}'
+      '';
 
     my.gc.maven.script = ''rm -rf ~/.m2/repository/*'';
   };
