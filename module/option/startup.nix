@@ -51,7 +51,7 @@
 
                   suppress="/tmp/suppress-startup"
                   if [[ -f "$suppress" ]]; then
-                    rm "$suppress"
+                    ${pkgs.coreutils}/bin/rm "$suppress"
                     exit 0
                   fi
 
