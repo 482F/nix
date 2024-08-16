@@ -22,17 +22,16 @@
       "my-nixos" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = let
-          importOptionals = type:
-            with builtins;
-              concatLists (attrValues (mapAttrs (
-                  opt: state: let
-                    path = assert pathExists ./optional/${opt}; ./optional/${opt}/${type};
-                  in
-                    if state && pathExists path
-                    then myLib.importAll path
-                    else []
-                )
-                private.optional));
+          importedOptionals = with builtins;
+            concatLists (attrValues (mapAttrs (
+                opt: state: let
+                  path = assert pathExists ./optional/${opt}; ./optional/${opt};
+                in
+                  if state && pathExists path
+                  then myLib.importAll path
+                  else []
+              )
+              private.optional));
           specialArgs = {
             inherit (private) env;
             inherit user myLib;
@@ -48,19 +47,20 @@
             );
 
           os =
-            myLib.importAll ./os
-            ++ importOptionals "os"
-            ++ private.modules.os;
+            builtins.catAttrs "os"
+            (myLib.importAll ./module
+              ++ importedOptionals
+              ++ private.modules);
           home =
             map (m: args: {
               home-manager.users.${user} = m (
                 args // {config = args.config.home-manager.users.${user};}
               );
-            }) (
-              myLib.importAll ./home
-              ++ importOptionals "home"
-              ++ private.modules.home
-            );
+            }) (builtins.catAttrs "home" (
+              myLib.importAll ./module
+              ++ importedOptionals
+              ++ private.modules
+            ));
         in
           dep
           ++ map (
