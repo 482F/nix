@@ -57,7 +57,7 @@
 
                   ${pkgs.bash.outPath}/bin/bash --login "$startup"
 
-                  while true; do sleep infinity; done
+                  while true; do ${pkgs.coreutils}/bin/sleep infinity; done
                 ''
               )
               .outPath
