@@ -51,6 +51,56 @@
               ch = {
                 script = ''sudo NIXPKGS_ALLOW_UNFREE=1 NIXPKGS_ALLOW_INSECURE=1 nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'';
               };
+              p = let
+                preScript = ''
+                  subcommand="''${1:-}"
+                  shift 1
+
+                  function f-nix-search() {
+                    nix "$subcommand" nixpkgs "$@"
+                  }
+
+                  function f-nix-shell() {
+                    local hyphened=false
+                    local -a nargs=()
+                    for arg in "$@"; do
+                      if [[ "$arg" == "--" ]]; then
+                        hyphened="true"
+                      fi
+
+                      if [[ "$hyphened" == "true" ]] || [[ "$arg" == "-"* ]]; then
+                        nargs+=("$arg")
+                      else
+                        nargs+=("nixpkgs#$arg")
+                      fi
+                    done
+                    nix "$subcommand" "''${nargs[@]}"
+                  }
+
+                  function f-nix-run() {
+                    local target="''${1:-}"
+                    shift 1
+                    nix "$subcommand" "nixpkgs#$target" "$@"
+                  }
+                '';
+              in {
+                script = ''
+                  ${preScript}
+                  f-nix-$subcommand $@
+                '';
+                completion = ''
+                  ${preScript}
+                  export NIX_GET_COMPLETIONS="$((NIX_GET_COMPLETIONS-1))"
+
+                  result="$(f-nix-$subcommand $@)"
+
+                  if [[ "$subcommand" == "search" ]]; then
+                    echo "$result"
+                  else
+                    echo "$result" | sed 's/^nixpkgs#//g'
+                  fi
+                '';
+              };
             });
       })
     ];
