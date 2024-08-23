@@ -33,7 +33,7 @@
           Timer = {OnCalendar = value.onCalendar;};
         }
       )
-      (myLib.filterAttrs (name: value: value.enable) config.my.systemd.timer);
+      (lib.filterAttrs (name: value: value.enable) config.my.systemd.timer);
     config.systemd.user.services =
       builtins.mapAttrs (
         name: value: {
@@ -51,6 +51,6 @@
           };
         }
       )
-      (myLib.filterAttrs (name: value: value.enable) config.my.systemd.timer);
+      (lib.filterAttrs (name: value: value.enable) config.my.systemd.timer);
   };
 }

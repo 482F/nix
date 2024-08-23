@@ -2,13 +2,14 @@
   home = {
     config,
     pkgs,
+    lib,
     env,
     myLib,
     user,
     ...
   }: {
-    home.packages = with builtins;
-      attrValues (mapAttrs myLib.writeScriptBinWithArgs {
+    home.packages =
+      (lib.mapAttrsToList myLib.writeScriptBinWithArgs {
         # TODO: $WINDIR を動的に取得したい
         psh = "/mnt/c/windows/System32/WindowsPowerShell/v1.0/powershell.exe";
         wsl = "/mnt/c/windows/system32/wsl.exe";

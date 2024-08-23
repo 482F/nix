@@ -2,6 +2,7 @@
   home = {
     config,
     pkgs,
+    lib,
     env,
     myLib,
     user,
@@ -51,26 +52,27 @@
       enable = (env.proxy or null) != null;
       text =
         if enable
-        then ''
-          <settings>
-            <proxies>
-             <proxy>
-                <id>sb-http</id>
-                <active>true</active>
-                <protocol>http</protocol>
-                <host>${env.proxy.host}</host>
-                <port>${env.proxy.port}</port>
-              </proxy>
-             <proxy>
-                <id>sb-https</id>
-                <active>true</active>
-                <protocol>https</protocol>
-                <host>${env.proxy.host}</host>
-                <port>${env.proxy.port}</port>
-              </proxy>
-            </proxies>
-          </settings>
-        ''
+        then # xml
+          ''
+            <settings>
+              <proxies>
+               <proxy>
+                  <id>sb-http</id>
+                  <active>true</active>
+                  <protocol>http</protocol>
+                  <host>${env.proxy.host}</host>
+                  <port>${env.proxy.port}</port>
+                </proxy>
+               <proxy>
+                  <id>sb-https</id>
+                  <active>true</active>
+                  <protocol>https</protocol>
+                  <host>${env.proxy.host}</host>
+                  <port>${env.proxy.port}</port>
+                </proxy>
+              </proxies>
+            </settings>
+          ''
         else null;
     };
 
@@ -86,10 +88,8 @@
             mkdir -p "$out"
           ''
           + (
-            with builtins;
-              concatStringsSep
-              "\n"
-              (attrValues (mapAttrs (name: jdk: "ln -s ${jdk}/lib/openjdk $out/${name}") jdks))
+            lib.concatLines
+            (lib.mapAttrsToList (name: jdk: "ln -s ${jdk}/lib/openjdk $out/${name}") jdks)
           );
       })
       .outPath;

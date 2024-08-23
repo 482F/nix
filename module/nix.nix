@@ -2,6 +2,7 @@
   home = {
     config,
     pkgs,
+    lib,
     env,
     myLib,
     ...
@@ -28,80 +29,80 @@
           exit $code
         '';
         binName = "nix";
-        runtimeDepDerivations = with builtins;
-          attrValues (mapAttrs (subcommand: {
-              script,
-              completion ? ":",
-            }:
-              myLib.writeScriptBin "_nix-${subcommand}" ''
-                function comp() {
-                  ${completion}
-                }
-                function main() {
-                  ${script}
-                }
-                if [[ "''${NIX_GET_COMPLETIONS:-}" != "" ]]; then
-                  comp "$@"
-                  exit 0
-                fi
+        runtimeDepDerivations =
+          lib.mapAttrsToList (subcommand: {
+            script,
+            completion ? ":",
+          }:
+            myLib.writeScriptBin "_nix-${subcommand}" ''
+              function comp() {
+                ${completion}
+              }
+              function main() {
+                ${script}
+              }
+              if [[ "''${NIX_GET_COMPLETIONS:-}" != "" ]]; then
+                comp "$@"
+                exit 0
+              fi
 
-                main "$@"
-              '')
-            {
-              ch = {
-                script = ''sudo NIXPKGS_ALLOW_UNFREE=1 NIXPKGS_ALLOW_INSECURE=1 nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'';
-              };
-              p = let
-                preScript = ''
-                  subcommand="''${1:-}"
+              main "$@"
+            '')
+          {
+            ch = {
+              script = ''sudo NIXPKGS_ALLOW_UNFREE=1 NIXPKGS_ALLOW_INSECURE=1 nixos-rebuild switch --flake "$(readlink ~/nix)#my-nixos" --impure'';
+            };
+            p = let
+              preScript = ''
+                subcommand="''${1:-}"
+                shift 1
+
+                function f-nix-search() {
+                  nix "$subcommand" nixpkgs "$@"
+                }
+
+                function f-nix-shell() {
+                  local hyphened=false
+                  local -a nargs=()
+                  for arg in "$@"; do
+                    if [[ "$arg" == "--" ]]; then
+                      hyphened="true"
+                    fi
+
+                    if [[ "$hyphened" == "true" ]] || [[ "$arg" == "-"* ]]; then
+                      nargs+=("$arg")
+                    else
+                      nargs+=("nixpkgs#$arg")
+                    fi
+                  done
+                  nix "$subcommand" "''${nargs[@]}"
+                }
+
+                function f-nix-run() {
+                  local target="''${1:-}"
                   shift 1
+                  nix "$subcommand" "nixpkgs#$target" "$@"
+                }
+              '';
+            in {
+              script = ''
+                ${preScript}
+                f-nix-$subcommand $@
+              '';
+              completion = ''
+                ${preScript}
+                export NIX_GET_COMPLETIONS="$((NIX_GET_COMPLETIONS-1))"
 
-                  function f-nix-search() {
-                    nix "$subcommand" nixpkgs "$@"
-                  }
+                result="$(f-nix-$subcommand $@)"
 
-                  function f-nix-shell() {
-                    local hyphened=false
-                    local -a nargs=()
-                    for arg in "$@"; do
-                      if [[ "$arg" == "--" ]]; then
-                        hyphened="true"
-                      fi
-
-                      if [[ "$hyphened" == "true" ]] || [[ "$arg" == "-"* ]]; then
-                        nargs+=("$arg")
-                      else
-                        nargs+=("nixpkgs#$arg")
-                      fi
-                    done
-                    nix "$subcommand" "''${nargs[@]}"
-                  }
-
-                  function f-nix-run() {
-                    local target="''${1:-}"
-                    shift 1
-                    nix "$subcommand" "nixpkgs#$target" "$@"
-                  }
-                '';
-              in {
-                script = ''
-                  ${preScript}
-                  f-nix-$subcommand $@
-                '';
-                completion = ''
-                  ${preScript}
-                  export NIX_GET_COMPLETIONS="$((NIX_GET_COMPLETIONS-1))"
-
-                  result="$(f-nix-$subcommand $@)"
-
-                  if [[ "$subcommand" == "search" ]]; then
-                    echo "$result"
-                  else
-                    echo "$result" | sed 's/^nixpkgs#//g'
-                  fi
-                '';
-              };
-            });
+                if [[ "$subcommand" == "search" ]]; then
+                  echo "$result"
+                else
+                  echo "$result" | sed 's/^nixpkgs#//g'
+                fi
+              '';
+            };
+          };
       })
     ];
     my.gc.nix.script = ''

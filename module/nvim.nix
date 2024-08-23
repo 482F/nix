@@ -18,10 +18,12 @@
 
     programs.neovim = {
       enable = true;
-      extraLuaConfig = ''
-        vim.opt.rtp:prepend('${config.home.homeDirectory}/git/dotfiles/.config/nvim/')
-        vim.cmd.luafile('${config.home.homeDirectory}/git/dotfiles/.config/nvim/init.lua')
-      '';
+      extraLuaConfig =
+        # lua
+        ''
+          vim.opt.rtp:prepend('${config.home.homeDirectory}/git/dotfiles/.config/nvim/')
+          vim.cmd.luafile('${config.home.homeDirectory}/git/dotfiles/.config/nvim/init.lua')
+        '';
     };
 
     home.packages = [

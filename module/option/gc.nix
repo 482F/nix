@@ -25,13 +25,13 @@
     };
 
     config.home.packages = let
-      gcs = myLib.filterAttrs (name: value: value.enable && (value.script or null != null)) config.my.gc;
+      gcs = lib.filterAttrs (name: value: value.enable && (value.script or null != null)) config.my.gc;
     in
       if builtins.length (builtins.attrValues gcs) <= 0
       then []
       else let
-        runtimeDepDerivations = builtins.attrValues (
-          builtins.mapAttrs (name: {script, ...}: myLib.writeScriptBin "_mygc-${name}" script) gcs
+        runtimeDepDerivations = (
+          lib.mapAttrsToList (name: {script, ...}: myLib.writeScriptBin "_mygc-${name}" script) gcs
         );
         wr = binName: targetDerivation:
           myLib.withRuntimeDeps {

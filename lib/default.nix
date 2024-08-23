@@ -60,14 +60,14 @@
     writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "$@"'';
   importAll = with builtins;
     path:
-      pkgs.lib.lists.flatten (attrValues (mapAttrs (
+      pkgs.lib.lists.flatten (pkgs.lib.mapAttrsToList (
         pathStr: type: let
           fullPath = path + ("/" + pathStr);
         in
           if type == "directory"
           then importAll fullPath
           else import fullPath
-      ) (readDir path)));
+      ) (readDir path));
 
   # `imports = [(myLib.gitClone { ... })]`
   gitClone = {
@@ -93,12 +93,4 @@
       }
     ];
   };
-  filterAttrs = f: set:
-    with builtins;
-      listToAttrs
-      (
-        filter
-        (entry: f entry.neme entry.value)
-        (attrValues (mapAttrs (name: value: {inherit name value;}) set))
-      );
 }

@@ -23,7 +23,7 @@
         system = "x86_64-linux";
         modules = let
           importedOptionals = with builtins;
-            concatLists (attrValues (mapAttrs (
+            concatLists (nixpkgs.lib.mapAttrsToList (
                 opt: state: let
                   path = assert pathExists ./optional/${opt}; ./optional/${opt};
                 in
@@ -31,7 +31,7 @@
                   then myLib.importAll path
                   else []
               )
-              private.optional));
+              private.optional);
           specialArgs = {
             inherit (private) env;
             inherit user myLib;
