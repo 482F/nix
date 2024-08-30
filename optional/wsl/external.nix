@@ -38,7 +38,7 @@
         '';
       };
       win32yank = pkgs.stdenv.mkDerivation rec {
-        pname = "win32yank";
+        pname = "win32yank.exe";
         version = "0.1.1";
         src = pkgs.fetchzip {
           url = "https://github.com/equalsraf/win32yank/releases/download/v${version}/win32yank-x64.zip";
@@ -50,6 +50,36 @@
           dest="$out/bin/${pname}"
           cp -ai "$src/win32yank.exe" "$dest"
           chmod 755 "$dest"
+        '';
+      };
+      ahk1 = pkgs.stdenv.mkDerivation rec {
+        pname = "ahk.exe";
+        version = "1.1.37.02";
+        src = pkgs.fetchzip {
+          url = "https://github.com/AutoHotkey/AutoHotkey/releases/download/v${version}/AutoHotkey_${version}.zip";
+          hash = "sha256-JcgemO0IH+AL2mfjZoPxeK3hplC624mReAm4A7cw27I=";
+          stripRoot = false;
+        };
+        buildCommand = ''
+          mkdir -p $out/bin
+          dest=$out/bin/${pname}
+          cp -ai $src/AutoHotkeyU64.exe $dest
+          chmod 755 $dest
+        '';
+      };
+      ahk2 = pkgs.stdenv.mkDerivation rec {
+        pname = "ahk.exe";
+        version = "2.0.18";
+        src = pkgs.fetchzip {
+          url = "https://github.com/AutoHotkey/AutoHotkey/releases/download/v${version}/AutoHotkey_${version}.zip";
+          hash = "sha256-pWUiTMwZyULiPFibJ51AuhoiDyG2RDXBuRYJoysBLsE=";
+          stripRoot = false;
+        };
+        buildCommand = ''
+          mkdir -p $out/bin
+          dest=$out/bin/${pname}
+          cp -ai $src/AutoHotkey64.exe $dest
+          chmod 755 $dest
         '';
       };
     };
