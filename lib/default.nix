@@ -93,4 +93,26 @@
       }
     ];
   };
+  mkWinDerivation = {
+    sourceDerivation,
+    storeDir,
+  }: let
+    dest = "${storeDir}/${sourceDerivation.name}";
+  in {
+    # system.activationScripts.foobar.script = activation;
+    activation = ''
+      mkdir -p ${dest}
+      ${pkgs.rsync}/bin/rsync --recursive --del --checksum --links ${sourceDerivation}/ ${dest}/
+    '';
+    derivation = pkgs.runCommand sourceDerivation.name {} ''
+      mkdir -p $out
+      while read -u 10 dir; do
+        mkdir $out/$dir
+      done 10< <(ls -1 ${sourceDerivation})
+
+      while read -u 10 target; do
+        ln -s ${dest}/$target $out/$target
+      done 10< <(cd ${sourceDerivation}; ${pkgs.findutils}/bin/find . -mindepth 2 -maxdepth 2)
+    '';
+  };
 }
