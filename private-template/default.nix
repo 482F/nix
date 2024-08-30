@@ -46,6 +46,7 @@
     python = false;
     mp3 = false;
     rust = false;
+    barrier = false;
   };
   modules = myLib.importAll ./module;
 }
