@@ -26,22 +26,6 @@
       pkgs.oath-toolkit
       pkgs.wget
       pkgs.unzip
-
-      (pkgs.stdenv.mkDerivation rec {
-        pname = "win32yank";
-        version = "0.1.1";
-        src = pkgs.fetchzip {
-          url = "https://github.com/equalsraf/win32yank/releases/download/v${version}/win32yank-x64.zip";
-          sha256 = "0gclg5cpbq0qxnj8jfnxsrxyq5is1hka4ydwi4w8p18rqvaw8az2";
-          stripRoot = false;
-        };
-        buildCommand = ''
-          mkdir -p "$out/bin"
-          dest="$out/bin/${pname}"
-          cp -ai "$src/win32yank.exe" "$dest"
-          chmod 755 "$dest"
-        '';
-      })
     ];
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
