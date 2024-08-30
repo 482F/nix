@@ -8,27 +8,23 @@
     user,
     ...
   }: {
-    home.packages =
-      (lib.mapAttrsToList myLib.writeScriptBinWithArgs {
-        # TODO: $WINDIR を動的に取得したい
-        psh = "/mnt/c/windows/System32/WindowsPowerShell/v1.0/powershell.exe";
-        wsl = "/mnt/c/windows/system32/wsl.exe";
-        cmd = "/mnt/c/windows/system32/cmd.exe";
-      })
-      ++ [
-        (myLib.writeScriptBin "open" ''
-          if [ $# != 1 ]; then
-            explorer.exe .
+    home.packages = [
+      pkgs.psh
+      pkgs.wsl
+      pkgs.cmd
+      (myLib.writeScriptBin "open" ''
+        if [ $# != 1 ]; then
+          explorer.exe .
+        else
+          if [ -e $1 ]; then
+            cmd /c start $(wslpath -w $1) 2> /dev/null
           else
-            if [ -e $1 ]; then
-              cmd /c start $(wslpath -w $1) 2> /dev/null
-            else
-              echo "open: $1 : No such file or directory"
-            fi
+            echo "open: $1 : No such file or directory"
           fi
-        '')
-        (myLib.writeScriptBin "lock" ''rundll32.exe user32.dll,LockWorkStation'')
-      ];
+        fi
+      '')
+      (myLib.writeScriptBin "lock" ''rundll32.exe user32.dll,LockWorkStation'')
+    ];
 
     programs.bash = {
       enable = true;
@@ -105,5 +101,22 @@
   }: {
     wsl.enable = true;
     wsl.defaultUser = user;
+
+    nixpkgs.overlays = let
+      win-runnables = {
+        # TODO: $WINDIR を動的に取得したい
+        wsl = "/mnt/c/windows/system32/wsl.exe";
+        cmd = "/mnt/c/windows/system32/cmd.exe";
+        psh = "/mnt/c/windows/System32/WindowsPowerShell/v1.0/powershell.exe";
+      };
+      derivations = builtins.mapAttrs (name: path:
+        pkgs.runCommand name {} ''
+          mkdir -p $out/bin
+          ln -s ${path} $out/bin/${name}
+        '')
+      win-runnables;
+    in [
+      (final: prev: derivations)
+    ];
   };
 }
