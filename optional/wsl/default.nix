@@ -39,7 +39,7 @@
 
         history -a
 
-        psh Start-Process -WindowStyle Hidden -FilePath powershell -ArgumentList "\"
+        ${pkgs.psh}/bin/psh Start-Process -WindowStyle Hidden -FilePath powershell -ArgumentList "\"
           wsl --terminate "$distro"
           for (\`\$i=0; \`\$i -lt 10; \`\$i++) {
             sleep 1
@@ -55,7 +55,7 @@
           fi
 
           function winpath() {
-            local winpath="$(psh echo '$env:PATH')"
+            local winpath="$(${pkgs.psh}/bin/psh echo '$env:PATH')"
             local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
 
             local path="$PATH"
@@ -85,7 +85,7 @@
               local value="$(echo "$entry" | grep -Po ".:[^:]+$")"
               local value_w="$(wslpath -u "$value")"
               export "$name=$value_w"
-            done 10< <(psh '${builtins.concatStringsSep "\n" (map (e: "echo ${e}:$env:${e}") winEnvs)}' | grep -Po "[^;\r]+" | sed 's/\\/\\\\/g')
+            done 10< <(${pkgs.psh}/bin/psh '${builtins.concatStringsSep "\n" (map (e: "echo ${e}:$env:${e}") winEnvs)}' | grep -Po "[^;\r]+" | sed 's/\\/\\\\/g')
           }
           set_winenv
         '');
