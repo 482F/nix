@@ -140,7 +140,7 @@
     in
       config.lib.dag.entryAfter ["writeBoundary"] ''
         run mkdir -p '${jdtls-dir}'
-        run nix shell nixpkgs#rsync --command rsync -r --del --copy-links $VERBOSE_ARG ${my-jdtls}/ ${config.xdg.dataHome}/jdtls/
+        ${pkgs.rsync}/bin/rsync --recursive --del --checksum --copy-links $VERBOSE_ARG ${my-jdtls}/ ${config.xdg.dataHome}/jdtls/
         run chmod -R 755 '${jdtls-dir}'
       '';
 
