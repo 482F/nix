@@ -2,6 +2,7 @@
   home = {
     config,
     pkgs,
+    lib,
     env,
     user,
     myLib,
@@ -11,29 +12,14 @@
       [
         (myLib.writeScriptBinWithArgs "sb" "bash ~/git/misc/sb.sh")
       ]
-      ++ (map ({
-          name,
-          path,
-        }:
-          myLib.writeScriptBinWithArgs name "sb ${path}")
-        [
-          {
-            name = "pyobj-to-json";
-            path = "~/git/misc/pyobj-to-json.ts";
-          }
-          {
-            name = "sleep-until";
-            path = "~/git/misc/sleep-until.ts";
-          }
-          {
-            name = "deno-build";
-            path = "~/git/misc/deno-build.ts";
-          }
-          {
-            name = "tsd";
-            path = "~/git/tmux-start-daemon/main.ts";
-          }
-        ]);
+      ++ (lib.mapAttrsToList (
+          name: path: myLib.writeScriptBinWithArgs name "sb ${path}"
+        ) {
+          pyobj-to-json = "~/git/misc/pyobj-to-json.ts";
+          sleep-until = "~/git/misc/sleep-until.ts";
+          deno-build = "~/git/misc/deno-build.ts";
+          tsd = "~/git/tmux-start-daemon/main.ts";
+        });
 
     imports = [
       (myLib.gitClone {
