@@ -3,6 +3,7 @@
     config,
     pkgs,
     env,
+    myLib,
     user,
     ...
   }: {
@@ -137,7 +138,16 @@
         };
       }
       {
-        home.packages = [pkgs.trash-cli];
+        home.packages = [
+          pkgs.trash-cli
+          (myLib.writeScriptBin "wmnt" ''
+            uid="$(id -u)"
+            gid="$(id -g)"
+            drives="$(psh '(Get-PSDrive).Name') | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc'"
+
+            echo "$drives" | xargs -I {} sudo mount -t drvfs {}:\\ /mnt/{} -o uid=$uid -o gid=$gid
+          '')
+        ];
         programs.bash = {
           shellAliases = {
             rm = "trash";
