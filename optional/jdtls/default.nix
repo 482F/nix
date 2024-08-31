@@ -36,7 +36,7 @@
       java11 = mkJavaDerivation pkgs.jdk11_headless "java11";
       java17 = mkJavaDerivation pkgs.jdk17_headless "java17";
       rawMvn = pkgs.maven.override {
-        jdk = pkgs.jdk11_headless;
+        jdk_headless = pkgs.jdk11_headless;
       };
     in [
       java11
