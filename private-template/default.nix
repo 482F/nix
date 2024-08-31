@@ -37,16 +37,16 @@
   };
   optional = {
     wsl = true;
-    docker = false;
-    jdtls = false;
-    sshd = false;
-    aws = false;
-    certbot = false;
-    nodejs = false;
-    python = false;
-    mp3 = false;
-    rust = false;
-    barrier = false;
+    # docker = true;
+    # jdtls = true;
+    # sshd = true;
+    # aws = true;
+    # certbot = true;
+    # nodejs = true;
+    # python = true;
+    # mp3 = true;
+    # rust = true;
+    # barrier = true;
   };
   modules = myLib.importAll ./module;
 }
