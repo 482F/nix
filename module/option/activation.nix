@@ -69,12 +69,10 @@
           local old=$oldGenPath/my-activations
           local new=$newGenPath/my-activations
           local list="$({ ls -1 $old || true; ls -1 $new || true; } 2> /dev/null | sort | uniq)"
-          echo $list > ~/act.log
           while read -u 10 name; do
             if diff -rq $old/$name $new/$name &> /dev/null; then
               continue
             fi
-            echo has difference $name >> ~/act.log
 
             local cleanup=$old/$name/cleanup
             local activate=$new/$name/activate
