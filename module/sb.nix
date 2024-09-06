@@ -21,19 +21,17 @@
           tsd = "~/git/tmux-start-daemon/main.ts";
         });
 
-    imports = [
-      (myLib.gitClone {
-        homeManagerLib = config.lib;
-        cloneRemote = "https://github.com/482F/tmux-start-daemon.git";
+    my.gitrepos = [
+      {
+        remote = "https://github.com/482F/tmux-start-daemon.git";
         finalRemote = "git@github.com:482F/tmux-start-daemon.git";
         dist = "${config.home.homeDirectory}/git/tmux-start-daemon";
-      })
-      (myLib.gitClone {
-        homeManagerLib = config.lib;
-        cloneRemote = "https://github.com/482F/misc.git";
+      }
+      {
+        remote = "https://github.com/482F/misc.git";
         finalRemote = "git@github.com:482F/misc.git";
         dist = "${config.home.homeDirectory}/git/misc";
-      })
+      }
     ];
   };
 }

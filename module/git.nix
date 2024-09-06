@@ -34,13 +34,12 @@
       })
     ];
 
-    imports = [
-      (myLib.gitClone {
-        homeManagerLib = config.lib;
-        cloneRemote = "https://github.com/482F/dotfiles.git";
+    my.gitrepos = [
+      {
+        remote = "https://github.com/482F/dotfiles.git";
         finalRemote = "git@github.com:482F/dotfiles.git";
         dist = "${config.home.homeDirectory}/git/dotfiles";
-      })
+      }
     ];
   };
 }

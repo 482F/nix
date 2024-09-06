@@ -30,13 +30,12 @@
         source <(acdts completions bash | perl -pe 's/_acd_complete alias/COMP_WORDS=\"\''${COMP_WORDS[@]}\" COMP_CWORD=\"\$COMP_CWORD\" _acd_complete alias/')
       '';
     };
-    imports = [
-      (myLib.gitClone {
-        homeManagerLib = config.lib;
-        cloneRemote = "https://github.com/482F/misc.git";
+    my.gitrepos = [
+      {
+        remote = "https://github.com/482F/misc.git";
         finalRemote = "git@github.com:482F/misc.git";
         dist = "${config.home.homeDirectory}/git/misc";
-      })
+      }
     ];
   };
 }

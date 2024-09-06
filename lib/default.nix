@@ -69,30 +69,6 @@
           else import fullPath
       ) (readDir path));
 
-  # `imports = [(myLib.gitClone { ... })]`
-  gitClone = {
-    homeManagerLib,
-    cloneRemote,
-    finalRemote ? cloneRemote,
-    dist,
-  }: {
-    home.activation = builtins.listToAttrs [
-      {
-        name = "git-clone-" + dist;
-        value = homeManagerLib.dag.entryAfter ["writeBoundary"] ''
-          function _() {
-            if [[ -d '${dist}' ]]; then
-              return 0
-            fi
-            NIX_SSL_CERT_FILE='/etc/ssl/certs/ca-certificates.crt' run nix shell nixpkgs#git nixpkgs#openssh --command git clone '${cloneRemote}' '${dist}'
-            cd '${dist}'
-            run nix shell nixpkgs#git --command git remote set-url origin '${finalRemote}'
-          }
-          _; unset -f _
-        '';
-      }
-    ];
-  };
   mkWinDerivation = {
     sourceDerivation,
     storeDir,
