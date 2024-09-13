@@ -192,5 +192,13 @@
           }
         );
       };
+
+      environment.etc.machine-id.source =
+        (pkgs.runCommand "machine-id" {} ''
+          ${pkgs.coreutils}/bin/mkdir -p $out
+          ${pkgs.util-linux}/bin/uuidgen -r | ${pkgs.coreutils}/bin/tr -d - > $out/machine-id
+        '')
+        .out
+        + /machine-id;
     };
 }
