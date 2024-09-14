@@ -102,6 +102,12 @@
                 fi
               '';
             };
+            gcm = {
+              script = ''
+                # TODO: ''${command-not-found-drv}/bin/command-not-found のようにしたいが、derivation が外に公開されていないため取ってこれない
+                command-not-found "$1" 2>&1 | grep -Po '(?<=nix-shell -p ).+'
+              '';
+            };
           };
       })
     ];
