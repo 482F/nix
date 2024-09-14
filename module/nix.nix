@@ -102,6 +102,88 @@
                 fi
               '';
             };
+            run-command = {
+              script = ''
+                local setting=""
+                local script=""
+                local name="run-command-test"
+                while true; do
+                  if [[ ! -v 1 ]]; then
+                    break
+                  fi
+                  case "$1" in
+                    -h | --help)
+                      echo '  description:'
+                      echo '    run a shell script using `pkgs.runCommand`.'
+                      echo
+                      echo '  usage:'
+                      echo '    $ nix run-command <shell script>'
+                      echo '    $ echo <shell script> | nix run-command'
+                      echo '    $ echo '"'"'#!/usr/bin/env -S nix run-command --file'"'"' > test.sh; \'
+                      echo '      echo <shell script> >> test.sh; \'
+                      echo '      chmod 744 test.sh; \'
+                      echo '      ./test.sh'
+                      echo
+                      echo '  options:'
+                      echo '    -h | --help: show this help message.'
+                      echo '    -x | --xtrace: enable `set -x` in the shell script.'
+                      echo '    -n <name> | --name <name>: specify the derivation name. default: `run-command-test`'
+                      echo '    -f <file> | --name <file>: read the file as a shell script'
+                      exit 0
+                      ;;
+                    -x | --xtrace)
+                      setting="
+                        set -x
+                        $setting
+                      "
+                      ;;
+                    -n | --name)
+                      shift 1
+                      name="$1"
+                      ;;
+                    -f | --file)
+                      shift 1
+                      script="
+                        $script
+                        $(cat $1)
+                      "
+                      ;;
+                    *)
+                      script="
+                        $script
+                        $1
+                      "
+                      ;;
+                  esac
+                  shift 1
+                done
+
+                if [[ -z "$script" ]]; then
+                  script="$(cat)"
+                fi
+
+                local drv="$(nix eval --impure --raw --expr '
+                  let
+                    pkgs = (import <nixpkgs> {});
+                    drv = pkgs.runCommand "'"$name"'" {} '"'''"'
+                      mkdir -p $out
+                      '"$script"'
+                    '"'''"';
+                    dummy = with builtins; (tryEval (readFileType drv.outPath)).success;
+                  in if dummy || true then drv.drvPath else null
+                ')"'^*'
+
+                if [[ "$drv" == '^*' ]]; then
+                  exit 1
+                fi
+
+                echo ----------------log---------------- >&2
+                nix log $drv >&2
+                echo ----------------log---------------- >&2
+
+                nix derivation show $drv | ${pkgs.jq}/bin/jq -r 'to_entries[].value.env.out'
+              '';
+            };
             gcm = {
               script = ''
                 # TODO: ''${command-not-found-drv}/bin/command-not-found のようにしたいが、derivation が外に公開されていないため取ってこれない
