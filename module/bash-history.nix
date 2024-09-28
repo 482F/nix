@@ -7,6 +7,10 @@
     user,
     ...
   }: {
+    programs.bash = {
+      historySize = -1;
+      historyFileSize = -1;
+    };
     my.systemd.timer.bash-history-commit = {
       description = "git commit bash_history";
       onCalendar = ["*-*-* 15:00:00"];
