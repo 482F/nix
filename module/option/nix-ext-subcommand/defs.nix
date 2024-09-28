@@ -65,6 +65,7 @@
         script = ''
           local setting=""
           local script=""
+          local shell=""
           local name="run-command-test"
           while true; do
             if [[ ! -v 1 ]]; then
@@ -86,6 +87,7 @@
                 echo '  options:'
                 echo '    -h | --help: show this help message.'
                 echo '    -x | --xtrace: enable `set -x` in the shell script.'
+                echo '    -s | --shell: run command and enter shell.'
                 echo '    -n <name> | --name <name>: specify the derivation name. default: `run-command-test`'
                 echo '    -f <file> | --name <file>: read the file as a shell script'
                 exit 0
@@ -95,6 +97,9 @@
                   set -x
                   $setting
                 "
+                ;;
+              -s | --shell)
+                shell="true"
                 ;;
               -n | --name)
                 shift 1
@@ -141,6 +146,10 @@
           echo ----------------log---------------- >&2
 
           nix derivation show $drv | ${pkgs.jq}/bin/jq -r 'to_entries[].value.env.out'
+
+          if [[ "$shell" == "true" ]]; then
+            nix shell $drv
+          fi
         '';
       };
       gcm = {
