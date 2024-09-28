@@ -130,7 +130,6 @@
             let
               pkgs = (import <nixpkgs> {});
               drv = pkgs.runCommand "'"$name"'" {} '"'''"'
-                mkdir -p $out
                 '"$script"'
               '"'''"';
               dummy = with builtins; (tryEval (readFileType drv.outPath)).success;
