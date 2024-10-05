@@ -24,8 +24,8 @@
     programs.git = {
       enable = true;
       includes = [
-        {path = "~/git/dotfiles/.git-aliases";}
-        {path = "~/git/dotfiles/.gitconfig";}
+        {path = "${config.my.gitrepos.dotfiles.dest}/.git-aliases";}
+        {path = "${config.my.gitrepos.dotfiles.dest}/.gitconfig";}
       ];
     };
     home.packages = [

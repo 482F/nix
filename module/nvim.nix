@@ -20,8 +20,8 @@
       extraLuaConfig =
         # lua
         ''
-          vim.opt.rtp:prepend('${config.home.homeDirectory}/git/dotfiles/.config/nvim/')
-          vim.cmd.luafile('${config.home.homeDirectory}/git/dotfiles/.config/nvim/init.lua')
+          vim.opt.rtp:prepend('${config.my.gitrepos.dotfiles.dest}/.config/nvim/')
+          vim.cmd.luafile('${config.my.gitrepos.dotfiles.dest}/.config/nvim/init.lua')
         '';
     };
 

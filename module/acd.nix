@@ -12,7 +12,7 @@
       initExtra = ''
         export ACD_PORT=55812
 
-        PATH_TO_ACD="${config.home.homeDirectory}/git/misc/acd.ts"
+        PATH_TO_ACD="${config.my.gitrepos.misc.dest}/acd.ts"
         alias acdts="$PATH_TO_ACD"
         function acd() {
           if [[ "''${1:-}" == "completions" ]]; then
