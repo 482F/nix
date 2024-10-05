@@ -18,7 +18,7 @@
               type = types.bool;
               default = true;
             };
-            dist = mkOption {type = types.path;};
+            dest = mkOption {type = types.path;};
             remote = mkOption {type = types.str;};
             finalRemote = mkOption {
               type = types.nullOr types.str;
@@ -31,7 +31,7 @@
     config.home.activation.my-git-repos = let
       repos = builtins.attrValues (lib.filterAttrs (name: {enable, ...}: enable) cfg);
       script = lib.concatMapStrings (args: let
-        inherit (args) remote dist;
+        inherit (args) remote dest;
         finalRemote =
           if args.finalRemote == null
           then remote
@@ -40,11 +40,11 @@
         # bash
         ''
           function _() {
-            if [[ -d '${dist}' ]]; then
+            if [[ -d '${dest}' ]]; then
               return 0
             fi
-            NIX_SSL_CERT_FILE='/etc/ssl/certs/ca-certificates.crt' run nix shell nixpkgs#git nixpkgs#openssh --command git clone '${remote}' '${dist}'
-            run cd '${dist}'
+            NIX_SSL_CERT_FILE='/etc/ssl/certs/ca-certificates.crt' run nix shell nixpkgs#git nixpkgs#openssh --command git clone '${remote}' '${dest}'
+            run cd '${dest}'
             run nix shell nixpkgs#git --command git remote set-url origin '${finalRemote}'
             run cd -
           }

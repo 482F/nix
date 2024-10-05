@@ -11,7 +11,7 @@
       dotfiles = {
         remote = "https://github.com/482F/dotfiles.git";
         finalRemote = "git@github.com:482F/dotfiles.git";
-        dist = "${config.home.homeDirectory}/git/dotfiles";
+        dest = "${config.home.homeDirectory}/git/dotfiles";
       };
     };
 

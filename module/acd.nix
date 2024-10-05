@@ -34,7 +34,7 @@
       misc = {
         remote = "https://github.com/482F/misc.git";
         finalRemote = "git@github.com:482F/misc.git";
-        dist = "${config.home.homeDirectory}/git/misc";
+        dest = "${config.home.homeDirectory}/git/misc";
       };
     };
   };
