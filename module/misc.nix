@@ -28,6 +28,13 @@
       pkgs.wget
       pkgs.unzip
       pkgs.ouch
+      (myLib.writeScriptBin "wmnt" ''
+        uid="$(id -u)"
+        gid="$(id -g)"
+        drives="$(psh '(Get-PSDrive).Name') | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc'"
+
+        echo "$drives" | xargs -I {} sudo mount -t drvfs {}:\\ /mnt/{} -o uid=$uid -o gid=$gid
+      '')
     ];
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -140,13 +147,6 @@
       {
         home.packages = [
           pkgs.trash-cli
-          (myLib.writeScriptBin "wmnt" ''
-            uid="$(id -u)"
-            gid="$(id -g)"
-            drives="$(psh '(Get-PSDrive).Name') | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc'"
-
-            echo "$drives" | xargs -I {} sudo mount -t drvfs {}:\\ /mnt/{} -o uid=$uid -o gid=$gid
-          '')
         ];
         programs.bash = {
           shellAliases = {
