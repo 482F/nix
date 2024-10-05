@@ -23,7 +23,10 @@
           }
         else null;
     };
-    my.gc.docker.script = ''docker system prune --volumes -a'';
+    my.gc.docker.script = ''
+      docker kill $(docker ps -q)
+      docker system prune --volumes -a
+    '';
   };
   os = {
     config,
