@@ -144,6 +144,7 @@
         run chmod -R 755 '${jdtls-dir}'
       '';
 
+    my.gc.jdtls.script = ''rm -rf $XDG_DATA_HOME/nvim-jdtls/*'';
     my.gc.maven.script = ''rm -rf ~/.m2/repository/*'';
   };
 }
