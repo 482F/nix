@@ -19,6 +19,7 @@
           sleep-until = "~/git/misc/sleep-until.ts";
           deno-build = "~/git/misc/deno-build.ts";
           tsd = "~/git/tmux-start-daemon/main.ts";
+          jwt = "~/git/misc/jwt.ts";
         });
 
     my.gitrepos = [
