@@ -7,20 +7,20 @@
     user,
     myLib,
     ...
-  }: {
-    home.packages =
-      [
-        (myLib.writeScriptBinWithArgs "sb" "bash ${config.my.gitrepos.misc.dest}/sb.sh")
-      ]
-      ++ (lib.mapAttrsToList (
-          name: path: myLib.writeScriptBinWithArgs name "sb ${path}"
-        ) {
-          pyobj-to-json = "${config.my.gitrepos.misc.dest}/pyobj-to-json.ts";
-          sleep-until = "${config.my.gitrepos.misc.dest}/sleep-until.ts";
-          deno-build = "${config.my.gitrepos.misc.dest}/deno-build.ts";
-          jwt = "${config.my.gitrepos.misc.dest}/jwt.ts";
-          tsd = "${config.my.gitrepos.tmux-start-daemon.dest}/main.ts";
-        });
+  }: let
+    sb = myLib.writeScriptBinWithArgs "sb" "bash ${config.my.gitrepos.misc.dest}/sb.sh";
+    scripts = {
+      pyobj-to-json = "${config.my.gitrepos.misc.dest}/pyobj-to-json.ts";
+      sleep-until = "${config.my.gitrepos.misc.dest}/sleep-until.ts";
+      deno-build = "${config.my.gitrepos.misc.dest}/deno-build.ts";
+      jwt = "${config.my.gitrepos.misc.dest}/jwt.ts";
+      tsd = "${config.my.gitrepos.tmux-start-daemon.dest}/main.ts";
+    };
+    derivations =
+      {inherit sb;}
+      // (builtins.mapAttrs (name: path: myLib.writeScriptBinWithArgs name "${sb}/bin/sb ${path}") scripts);
+  in {
+    home.packages = builtins.attrValues derivations;
 
     my.gitrepos = {
       tmux-start-daemon = {
