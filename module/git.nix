@@ -11,7 +11,9 @@
       enable = true;
       initExtra = ''
         source ${config.programs.git.package}/share/bash-completion/completions/git-prompt.sh
-        PROMPT_COMMAND="__git_ps1 '\h \u: \W' '\\\$ ' 2>/dev/null; $PROMPT_COMMAND"
+        if [[ "$PS1" != *'__git_ps1'* ]]; then
+          PS1='\h \u: \W$(__git_ps1 " (%s)")\$ '
+        fi
         GIT_PS1_SHOWDIRTYSTATE=true
         GIT_PS1_SHOWSTASHSTATE=true
         GIT_PS1_SHOWUNTRACKEDFILES=true
@@ -41,5 +43,8 @@
         dist = "${config.home.homeDirectory}/git/dotfiles";
       }
     ];
+  };
+  os = {...}: {
+    programs.bash.promptInit = "";
   };
 }
