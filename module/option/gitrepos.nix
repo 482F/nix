@@ -7,11 +7,12 @@
     ...
   }: let
     inherit (lib) mkOption types;
+    cfg = config.my.gitrepos;
   in {
     options = {
       my.gitrepos = mkOption {
-        default = [];
-        type = types.listOf (types.submodule {
+        default = {};
+        type = types.attrsOf (types.submodule {
           options = {
             enable = mkOption {
               type = types.bool;
@@ -28,7 +29,7 @@
       };
     };
     config.home.activation.my-git-repos = let
-      repos = builtins.filter ({enable, ...}: enable) config.my.gitrepos;
+      repos = builtins.attrValues (lib.filterAttrs (name: {enable, ...}: enable) cfg);
       script = lib.concatMapStrings (args: let
         inherit (args) remote dist;
         finalRemote =
