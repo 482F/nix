@@ -7,19 +7,6 @@
     myLib,
     user,
     ...
-  }: {
-    home.packages = [
-      pkgs.gsudo
-      pkgs.win32yank
-    ];
-  };
-  os = {
-    config,
-    pkgs,
-    env,
-    myLib,
-    user,
-    ...
   }: let
     rawDerivations = rec {
       gsudo = pkgs.stdenv.mkDerivation rec {
@@ -90,12 +77,26 @@
       })
     rawDerivations;
   in {
+    home.packages = [
+      config.my.pkgs.gsudo
+      config.my.pkgs.win32yank
+    ];
+    my.pkgs = builtins.mapAttrs (name: {derivation, ...}: derivation) winDerivations;
+    home.activation.win-derivations = config.lib.dag.entryAfter ["writeBoundary"] (lib.pipe winDerivations [
+      (builtins.mapAttrs (name: {activation, ...}: activation))
+      builtins.attrValues
+      (builtins.concatStringsSep "\n")
+    ]);
+  };
+  os = {
+    config,
+    pkgs,
+    env,
+    myLib,
+    user,
+    ...
+  }: {
     wsl.enable = true;
     wsl.defaultUser = user;
-
-    nixpkgs.overlays = [
-      (final: prev: (builtins.mapAttrs (name: {derivation, ...}: derivation) winDerivations))
-    ];
-    system.activationScripts = builtins.mapAttrs (name: {activation, ...}: activation) winDerivations;
   };
 }

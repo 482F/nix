@@ -1,5 +1,5 @@
 {
-  os = {
+  home = {
     config,
     pkgs,
     env,
@@ -45,40 +45,36 @@
         barrierBinNames;
     };
   in {
-    nixpkgs.overlays = [
-      (final: prev: {win-barrier = win-barrier;})
-    ];
-    system.activationScripts = {
-      barrier-build = ''
-        function main() {
-          if [[ -d ${storePath} ]]; then
-            return 0
-          fi
-          mkdir -p ${storePath}
-          cd ${storePath}
+    my.pkgs = {inherit win-barrier;};
+    home.activation.win-barrier = config.lib.dag.entryAfter ["writeBoundary"] ''
+      function main() {
+        if [[ -d ${storePath} ]]; then
+          return 0
+        fi
+        mkdir -p ${storePath}
+        cd ${storePath}
 
-          cp ${innounp}/bin/innounp ./
-          cp ${win-barrier}/dep/setup.exe ./setup.exe
-          ./innounp -x -d. setup.exe 2>&1
+        cp ${innounp}/bin/innounp ./
+        cp ${win-barrier}/dep/setup.exe ./setup.exe
+        ./innounp -x -d. setup.exe 2>&1
 
-          rm setup.exe innounp
+        rm setup.exe innounp
 
-          mkdir -p dep
-          mv \{app\}/* dep/
+        mkdir -p dep
+        mv \{app\}/* dep/
 
-          rm -rf \{app\} \{tmp\}
+        rm -rf \{app\} \{tmp\}
 
-          chmod 755 dep/*.exe
+        chmod 755 dep/*.exe
 
-          mkdir -p bin
-          ${lib.concatMapStrings (binName: ''
-            ln -s ../dep/${binName} bin/${binName}
-          '')
-          barrierBinNames}
-        }
-        main
-        unset -f main
-      '';
-    };
+        mkdir -p bin
+        ${lib.concatMapStrings (binName: ''
+          ln -s ../dep/${binName} bin/${binName}
+        '')
+        barrierBinNames}
+      }
+      main
+      unset -f main
+    '';
   };
 }

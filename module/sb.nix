@@ -18,9 +18,10 @@
     };
     derivations =
       {inherit sb;}
-      // (builtins.mapAttrs (name: path: myLib.writeScriptBinWithArgs name "${sb}/bin/sb ${path}") scripts);
+      // (builtins.mapAttrs (name: path: myLib.writeScriptBinWithArgs name "${config.my.pkgs.sb}/bin/sb ${path}") scripts);
   in {
     home.packages = builtins.attrValues derivations;
+    my.pkgs = derivations;
 
     my.gitrepos = {
       tmux-start-daemon = {

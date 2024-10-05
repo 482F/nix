@@ -9,9 +9,9 @@
     ...
   }: {
     home.packages = [
-      pkgs.psh
-      pkgs.wsl
-      pkgs.cmd
+      config.my.pkgs.psh
+      config.my.pkgs.wsl
+      config.my.pkgs.cmd
       (myLib.writeScriptBin "open" ''
         if [ $# != 1 ]; then
           explorer.exe .
@@ -39,7 +39,7 @@
 
         history -a
 
-        ${pkgs.psh}/bin/psh Start-Process -WindowStyle Hidden -FilePath powershell -ArgumentList "\"
+        ${config.my.pkgs.psh}/bin/psh Start-Process -WindowStyle Hidden -FilePath powershell -ArgumentList "\"
           wsl --terminate "$distro"
           for (\`\$i=0; \`\$i -lt 10; \`\$i++) {
             sleep 1
@@ -55,7 +55,7 @@
           fi
 
           function winpath() {
-            local winpath="$(${pkgs.psh}/bin/psh echo '$env:PATH')"
+            local winpath="$(${config.my.pkgs.psh}/bin/psh echo '$env:PATH')"
             local winpath_w="$(echo "''${winpath//\\/\/}" | grep -Po "[^;\r\n]+" | xargs -I {} wslpath -u {})"
 
             local path="$PATH"
@@ -85,24 +85,12 @@
               local value="$(echo "$entry" | grep -Po ".:[^:]+$")"
               local value_w="$(wslpath -u "$value")"
               export "$name=$value_w"
-            done 10< <(${pkgs.psh}/bin/psh '${builtins.concatStringsSep "\n" (map (e: "echo ${e}:$env:${e}") winEnvs)}' | grep -Po "[^;\r]+" | sed 's/\\/\\\\/g')
+            done 10< <(${config.my.pkgs.psh}/bin/psh '${builtins.concatStringsSep "\n" (map (e: "echo ${e}:$env:${e}") winEnvs)}' | grep -Po "[^;\r]+" | sed 's/\\/\\\\/g')
           }
           set_winenv
         '');
     };
-  };
-  os = {
-    config,
-    pkgs,
-    env,
-    myLib,
-    user,
-    ...
-  }: {
-    wsl.enable = true;
-    wsl.defaultUser = user;
-
-    nixpkgs.overlays = let
+    my.pkgs = let
       win-runnables = {
         # TODO: $WINDIR を動的に取得したい
         wsl = "/mnt/c/windows/system32/wsl.exe";
@@ -115,8 +103,18 @@
           ln -s ${path} $out/bin/${name}
         '')
       win-runnables;
-    in [
-      (final: prev: derivations)
-    ];
+    in
+      derivations;
+  };
+  os = {
+    config,
+    pkgs,
+    env,
+    myLib,
+    user,
+    ...
+  }: {
+    wsl.enable = true;
+    wsl.defaultUser = user;
   };
 }

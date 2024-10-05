@@ -75,7 +75,6 @@
   }: let
     dest = "${storeDir}/${sourceDerivation.name}";
   in {
-    # system.activationScripts.foobar.script = activation;
     activation = ''
       mkdir -p ${dest}
       ${pkgs.rsync}/bin/rsync --recursive --del --checksum --links ${sourceDerivation}/ ${dest}/
