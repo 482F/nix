@@ -31,7 +31,7 @@
       (myLib.writeScriptBin "wmnt" ''
         uid="$(id -u)"
         gid="$(id -g)"
-        drives="$(psh '(Get-PSDrive).Name') | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc'"
+        drives="$(psh '(Get-PSDrive).Name' | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc')"
 
         echo "$drives" | xargs -I {} sudo mount -t drvfs {}:\\ /mnt/{} -o uid=$uid -o gid=$gid
       '')
