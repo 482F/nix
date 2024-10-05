@@ -165,6 +165,43 @@
           ${pkgs.nix}/bin/nix shell "$@"
         '';
       };
+      temp-writable = {
+        script = ''
+          local links=()
+          local targets=()
+          for _link in "$@"; do
+            local link="$(realpath --no-symlinks "$_link")"
+            local target="$(readlink "$link")"
+            if [[ ! -L "$link" ]] || [[ -z "$target" ]]; then
+              continue
+            fi
+            links+=("$link")
+            targets+=("$target")
+            rm "$link"
+            rsync --recursive --copy-links "$target" "$(dirname "$link")"
+            chmod u+w -R "$link"
+            chmod u+r -R "$link"
+          done
+          ${config.my.pkgs.prepend-ps1}/bin/prepend-ps1 '(nix-temp-writable)' $SHELL || true
+          for i in "''${!targets[@]}"; do
+            local link="''${links[$i]}"
+            local target="''${targets[$i]}"
+
+            if [[ -z "$target" ]]; then
+              continue
+            fi
+
+            rm -rf "$link"
+            ln -s "$target" "$link"
+          done
+        '';
+        completion = ''
+          local args=("$@")
+          local target="''${args[$((NIX_GET_COMPLETIONS-2))]}"
+          echo filenames
+          compgen -f "$target"
+        '';
+      };
     };
     cfg = config.nix.ext-subcommands;
   in {
