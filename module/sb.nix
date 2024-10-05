@@ -14,6 +14,7 @@
       sleep-until = "${config.my.gitrepos.misc.dest}/sleep-until.ts";
       deno-build = "${config.my.gitrepos.misc.dest}/deno-build.ts";
       jwt = "${config.my.gitrepos.misc.dest}/jwt.ts";
+      prepend-ps1 = "${config.my.gitrepos.misc.dest}/prepend-ps1.sh";
       tsd = "${config.my.gitrepos.tmux-start-daemon.dest}/main.ts";
     };
     derivations =
