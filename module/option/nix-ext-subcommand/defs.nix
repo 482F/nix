@@ -157,6 +157,14 @@
           command-not-found "$1" 2>&1 | grep -Po '(?<=nix-shell -p ).+'
         '';
       };
+      shell = {
+        script = ''
+          PS1="\e[32m(nix-shell)\e[m $(bash -i -c 'echo "$PS1"')" ${pkgs.nix}/bin/nix shell "$@"
+        '';
+        completion = ''
+          ${pkgs.nix}/bin/nix shell "$@"
+        '';
+      };
     };
     cfg = config.nix.ext-subcommands;
   in {
