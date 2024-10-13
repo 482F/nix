@@ -60,14 +60,16 @@
     writeScriptBin binName ''nix run nixpkgs#${pkgName} -- "$@"'';
   importAll = with builtins;
     path:
-      pkgs.lib.lists.flatten (pkgs.lib.mapAttrsToList (
+      builtins.filter (value: value != null) (pkgs.lib.lists.flatten (pkgs.lib.mapAttrsToList (
         pathStr: type: let
           fullPath = path + ("/" + pathStr);
         in
           if type == "directory"
           then importAll fullPath
-          else import fullPath
-      ) (readDir path));
+          else if (pkgs.lib.strings.hasSuffix ".nix" fullPath)
+          then import fullPath
+          else null
+      ) (readDir path)));
 
   mkWinDerivation = {
     sourceDerivation,
