@@ -24,7 +24,10 @@
         else null;
     };
     my.gc.docker.script = ''
-      docker kill $(docker ps -q)
+      ps="$(docker ps -q)"
+      if [[ -n "$ps" ]]; then
+        docker kill $ps
+      fi
       docker system prune --volumes -a
     '';
   };
