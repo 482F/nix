@@ -202,20 +202,6 @@
           compgen -f "$target"
         '';
       };
-      flake-lock-update = {
-        script = ''
-          local option="$(nix eval --impure --raw --expr '
-            with builtins; let
-              inputs = (import ./flake.nix).inputs;
-              names = attrNames inputs;
-              options = map (name: "--update-input ''${name}") names;
-              option = concatStringsSep " " options;
-            in
-              option
-          ')"
-          nix flake lock $option
-        '';
-      };
     };
     cfg = config.nix.ext-subcommands;
   in {
