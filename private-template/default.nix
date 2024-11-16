@@ -38,7 +38,7 @@
   optional = {
     wsl = true;
     # docker = true;
-    # jdtls = true;
+    # java = true;
     # sshd = true;
     # aws = true;
     # certbot = true;
