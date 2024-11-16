@@ -44,7 +44,13 @@
       (myLib.writeScriptBin "mvn" ''
         JAVA_HOME=${mvnJava} ${rawMvn}/bin/mvn "$@"
       '')
+      (pkgs.checkstyle.override {jre = pkgs.jdk17_headless;})
     ];
+
+    xdg.dataFile."checkstyle.xml".source = let
+      xml = env.checkstyle.configXml or null;
+    in
+      lib.mkIf (xml != null) xml;
 
     # 下記のような形式だと何故かプロキシを通ってくれないことがあるので ~/.m2/settings.xml で設定
     # MAVEN_OPTS="-Dhttp.proxyHost=xxx.xxx.xxx.xxx -Dhttp.proxyPort=xxxxx -Dhttps.proxyHost=xxx.xxx.xxx.xxx -Dhttps.proxyPort=xxxxx" mvn foobar
