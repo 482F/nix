@@ -28,20 +28,15 @@
     runtimeDepPaths ? [],
   }:
     (writeScriptBinWithArgs binName "${targetDerivation.outPath}/bin/${binName}")
-    .overrideAttrs (attrs: {
+    .overrideAttrs (attrs: let
+      paths = builtins.concatStringsSep ":" ([(pkgs.lib.makeBinPath runtimeDepDerivations)] ++ runtimeDepPaths);
+    in {
       nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [pkgs.makeWrapper];
       buildCommand =
         attrs.buildCommand
         + ''
-          wrapProgram $out/bin/${binName} --prefix PATH : ${pkgs.lib.makeBinPath runtimeDepDerivations}
-        ''
-        + (
-          with builtins;
-            concatStringsSep "\n" (
-              map (path: "wrapProgram $out/bin/${binName} --prefix PATH : ${path}")
-              runtimeDepPaths
-            )
-        );
+          wrapProgram $out/bin/${binName} --prefix PATH : ${paths}
+        '';
       meta.priority = (targetDerivation.meta.priority or 5) - 1;
     });
   aliasEvalFn = name: fnBody:
