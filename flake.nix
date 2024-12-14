@@ -11,7 +11,7 @@
     };
   };
 
-  outputs = {
+  outputs = inputs @ {
     nixpkgs,
     nixos-wsl,
     home-manager,
@@ -22,7 +22,7 @@
     myLib = import ./lib {};
   in {
     nixosConfigurations = {
-      "my-nixos" = nixpkgs.lib.nixosSystem {
+      "my-nixos" = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = let
           importedOptionals = with builtins;
@@ -37,7 +37,7 @@
               private.optional);
           specialArgs = {
             inherit (private) env;
-            inherit user myLib;
+            inherit user myLib system inputs;
           };
           dep =
             [
