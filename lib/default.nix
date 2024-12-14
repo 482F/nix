@@ -1,6 +1,6 @@
 {pkgs ? import <nixpkgs> {}}: rec {
   writeScriptBin = binName: script: (pkgs.writeScriptBin binName ''
-    #!/usr/bin/env bash
+    #!${pkgs.bash}/bin/bash
 
     set -ue -o pipefail
 
