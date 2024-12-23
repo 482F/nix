@@ -44,7 +44,20 @@
       (myLib.writeScriptBin "mvn" ''
         JAVA_HOME=${mvnJava} ${rawMvn}/bin/mvn "$@"
       '')
-      (pkgs.checkstyle.override {jre = pkgs.jdk17_headless;})
+      (myLib.writeScriptBin "checkstyle-stdin" ''
+        function main() {
+          local args=("$@")
+
+          local file="$(readlink -f "''${args[-1]}")"
+          unset args[-1]
+
+          tmp="/tmp/checkstyle/$file"
+          mkdir -p "$(dirname "$tmp")"
+          cat > "$tmp"
+          ${(pkgs.checkstyle.override {jre = pkgs.jdk17_headless;})}/bin/checkstyle "''${args[@]}" "$tmp" | sed -e 's/\/tmp\/checkstyle//g'
+        }
+        main "$@"
+      '')
     ];
 
     xdg.dataFile."checkstyle.xml".source = let
