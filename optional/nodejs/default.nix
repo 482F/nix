@@ -7,7 +7,11 @@
     lib,
     ...
   }: {
-    home.packages = [pkgs.yarn];
+    home.packages = [
+      (pkgs.yarn.override {
+        nodejs = pkgs.nodejs_22;
+      })
+    ];
     my.gc.yarn.script = ''rm -rf ~/.cache/yarn/*'';
   };
 }
