@@ -87,4 +87,16 @@
       done 10< <(cd ${sourceDerivation}; ${pkgs.findutils}/bin/find .)
     '';
   };
+
+  flakeToDerivation = {
+    local ? null,
+    remote,
+    system,
+  }: let
+    flake =
+      if (local != null) && (builtins.pathExists "${local}/flake.nix")
+      then local
+      else remote;
+  in
+    (builtins.getFlake flake).packages.${system}.default;
 }
