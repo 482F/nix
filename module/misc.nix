@@ -5,8 +5,17 @@
     env,
     myLib,
     user,
+    system,
     ...
-  }: {
+  }: let
+    tools = {
+      totp = myLib.flakeToDerivation {
+        local = "${config.my.gitrepos.misc.dest}/totp";
+        remote = "git+https://github.com/482F/misc?dir=totp";
+        inherit system;
+      };
+    };
+  in {
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
     home.username = "${user}";
@@ -21,21 +30,24 @@
     # release notes.
     home.stateVersion = "24.05"; # Please read the comment before changing.
 
+    my.pkgs = tools;
     # The home.packages option allows you to install Nix packages into your
     # environment.
-    home.packages = [
-      pkgs.oath-toolkit
-      pkgs.wget
-      pkgs.unzip
-      pkgs.ouch
-      (myLib.writeScriptBin "wmnt" ''
-        uid="$(id -u)"
-        gid="$(id -g)"
-        drives="$(psh '(Get-PSDrive).Name' | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc')"
+    home.packages =
+      [
+        pkgs.oath-toolkit
+        pkgs.wget
+        pkgs.unzip
+        pkgs.ouch
+        (myLib.writeScriptBin "wmnt" ''
+          uid="$(id -u)"
+          gid="$(id -g)"
+          drives="$(psh '(Get-PSDrive).Name' | grep -Po '^[A-Z](?=\r)' | perl -ne 'print lc')"
 
-        echo "$drives" | xargs -I {} sudo mount -t drvfs {}:\\ /mnt/{} -o uid=$uid -o gid=$gid
-      '')
-    ];
+          echo "$drives" | xargs -I {} sudo mount -t drvfs {}:\\ /mnt/{} -o uid=$uid -o gid=$gid
+        '')
+      ]
+      ++ (builtins.attrValues tools);
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'.
