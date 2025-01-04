@@ -4,10 +4,19 @@
     pkgs,
     env,
     user,
+    system,
+    myLib,
     ...
-  }: {
+  }: let
+    awsas = myLib.flakeToDerivation {
+      local = "${config.my.gitrepos.misc.dest}/awsas";
+      remote = "git+https://github.com/482F/misc?dir=awsas";
+      inherit system;
+    };
+  in {
     home.packages = [
       pkgs.ssm-session-manager-plugin
+      awsas
     ];
     programs.awscli = {
       enable = true;
